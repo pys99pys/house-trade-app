@@ -1,7 +1,6 @@
+import TradeList from "@/components/trade-list/Tradelist";
 import { TradeItem } from "@/interfaces/TradeItem";
 import { getTradeList } from "@/utils/crawler";
-
-import TradeList from "./TradeList";
 
 const page = async ({
   searchParams,
