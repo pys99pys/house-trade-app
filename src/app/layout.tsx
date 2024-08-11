@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import "./globals.css";
+
+import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "아파트 실거래가 조회",

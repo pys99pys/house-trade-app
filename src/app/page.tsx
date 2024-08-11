@@ -1,7 +1,7 @@
-import { FC } from "react";
+import { redirect } from "next/navigation";
 
-const Page: FC = () => {
-  return <div>Page</div>;
+const Page = () => {
+  redirect("/trade-list");
 };
 
 export default Page;
