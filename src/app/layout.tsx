@@ -29,11 +29,7 @@ export default function RootLayout({
       </head>
       <body>
         <header className={styles.header}>
-          <h1>
-            <Link href={TRADE_LIST_PATH} className={styles.logo}>
-              아파트 실거래가 조회
-            </Link>
-          </h1>
+          <h1>아파트 실거래가 조회</h1>
         </header>
         <main className={styles.main}>{children}</main>
       </body>

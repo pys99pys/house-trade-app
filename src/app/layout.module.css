@@ -9,12 +9,6 @@
   box-shadow: 0 0 10px #ddd;
 }
 
-.logo {
-  text-decoration: none;
-  color: var(--color-black);
-  transition: 300ms ease;
-}
-
 .logo:hover {
   color: var(--color-primary);
 }
