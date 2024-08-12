@@ -27,14 +27,14 @@ const SearchForm: FC<SearchFormProps> = () => {
   return (
     <>
       <form className={styles.form} onSubmit={onClickSearch}>
-        <Select onChange={onChangeCityName}>
+        <Select value={form.cityName} onChange={onChangeCityName}>
           {getCityNameItems().map((cityName) => (
             <option key={cityName} value={cityName}>
               {cityName}
             </option>
           ))}
         </Select>
-        <Select onChange={onChangeCityCode}>
+        <Select value={form.cityCode} onChange={onChangeCityCode}>
           {getCityCodeItems(form.cityName).map((item) => (
             <option key={item.code} value={item.code}>
               {item.name}
