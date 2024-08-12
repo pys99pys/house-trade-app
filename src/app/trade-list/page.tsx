@@ -3,12 +3,11 @@ import { getTradeList } from "@/utils/crawler";
 
 import Client from "./client";
 
-const page = async ({
-  searchParams,
-}: {
+interface Params {
   searchParams: { cityCode?: string; yearMonth?: string };
-}) => {
-  let count = 0;
+}
+
+const Page = async ({ searchParams }: Params) => {
   let tradeItems: TradeItem[] = [];
 
   if (searchParams.cityCode && searchParams.yearMonth) {
@@ -17,11 +16,10 @@ const page = async ({
       createDt: searchParams.yearMonth,
     });
 
-    count = result.count;
     tradeItems = result.list;
   }
 
-  return <Client count={count} tradeItems={tradeItems} />;
+  return <Client tradeItems={tradeItems} />;
 };
 
-export default page;
+export default Page;

@@ -1,12 +1,9 @@
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { STORAGE_KEY_APART_LIST, STORAGE_KEY_ORDER } from "@/constants/storageKeys";
-import useDidMount from "@/hooks/useDidMount";
-import useMounted from "@/hooks/useMounted";
 import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
-import { SearchFormType } from "@/interfaces/SearchForm";
 import { TradeItem } from "@/interfaces/TradeItem";
 import { parseToAverageAmountText } from "@/utils/formatter";
 import { getValue, setValue } from "@/utils/storage";
@@ -43,12 +40,15 @@ const PER_PAGE = 15;
 
 const useTradeListTable = ({ tradeItems }: Params): Return => {
   const params = useSearchParams();
-  const isMounted = useMounted();
   const cityCode = params.get("cityCode") ?? "";
 
   const [page, setPage] = useState<number>(1);
-  const [order, setOrder] = useState<OrderType>(["tradeDate", "desc"]);
-  const [savedList, setSavedList] = useState<string[]>([]);
+  const [order, setOrder] = useState<OrderType>(
+    getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]
+  );
+  const [savedList, setSavedList] = useState<string[]>(
+    getValue(STORAGE_KEY_APART_LIST) ?? []
+  );
   const [filter, setFilter] = useState<FilterType>({
     apartName: "",
     onlyBaseSize: false,
@@ -76,22 +76,6 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
 
   const averageAmount = useMemo(() => parseToAverageAmountText(list), [list]);
   const count = useMemo(() => filteredItems.length, [filteredItems]);
-
-  const setDefaultOrder = () => {
-    const storageData = getValue<OrderType>(STORAGE_KEY_ORDER);
-
-    if (storageData) {
-      setOrder(storageData);
-    }
-  };
-
-  const setDefaultSavedList = () => {
-    const storageData = getValue<string[]>(STORAGE_KEY_APART_LIST);
-
-    if (storageData) {
-      setSavedList(storageData);
-    }
-  };
 
   const onChangeOrder = (column: OrderType[0]) =>
     setOrder([
@@ -126,33 +110,13 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
       onlySavedList: !filter.onlySavedList,
     });
 
-  useDidMount(() => {
-    setDefaultOrder();
-    setDefaultSavedList();
-  });
-
   useEffect(
     () => setFilter({ apartName: "", onlyBaseSize: false, onlySavedList: false }),
     [tradeItems]
   );
-
-  useEffect(() => {
-    if (isMounted) {
-      setPage(1);
-    }
-  }, [filteredItems, isMounted]);
-
-  useEffect(() => {
-    if (isMounted) {
-      setValue(STORAGE_KEY_ORDER, order);
-    }
-  }, [order, isMounted]);
-
-  useEffect(() => {
-    if (isMounted) {
-      setValue(STORAGE_KEY_APART_LIST, savedList);
-    }
-  }, [savedList, isMounted]);
+  useEffect(() => setPage(1), [filteredItems]);
+  useEffect(() => setValue(STORAGE_KEY_ORDER, order), [order]);
+  useEffect(() => setValue(STORAGE_KEY_APART_LIST, savedList), [savedList]);
 
   return {
     cityCode,

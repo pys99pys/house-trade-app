@@ -2,8 +2,6 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
-import useDidMount from "@/hooks/useDidMount";
-import useMounted from "@/hooks/useMounted";
 import { FavoriteItem, SearchFormType } from "@/interfaces/SearchForm";
 import {
   getCityCodeWithCode,
@@ -28,10 +26,11 @@ interface Return {
 }
 
 const useSearchForm = (): Return => {
-  const isMounted = useMounted();
   const { push } = useRouter();
 
-  const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>([]);
+  const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(
+    getValue(STORAGE_KEY_FAVORITE_LIST) ?? []
+  );
   const [form, setForm] = useState<SearchFormType>({
     cityName: getFirstCityName(),
     cityCode: getFirstCityCode(),
@@ -53,14 +52,6 @@ const useSearchForm = (): Return => {
     () => favoriteCityCodes.some((item) => item === form.cityCode),
     [favoriteCityCodes, form.cityCode]
   );
-
-  const setDefaultFavoriteCityCodes = () => {
-    const savedFavoriteCotyCodes = getValue<string[]>(STORAGE_KEY_FAVORITE_LIST);
-
-    if (savedFavoriteCotyCodes) {
-      setFavoriteCityCodes(savedFavoriteCotyCodes);
-    }
-  };
 
   const onChangeCityName = (cityName: string) => setForm({ ...form, cityName });
 
@@ -98,13 +89,10 @@ const useSearchForm = (): Return => {
     onSubmit({ yearMonth: form.yearMonth, cityCode });
   };
 
-  useDidMount(setDefaultFavoriteCityCodes);
-
-  useEffect(() => {
-    if (isMounted) {
-      setValue(STORAGE_KEY_FAVORITE_LIST, favoriteCityCodes);
-    }
-  }, [favoriteCityCodes, isMounted]);
+  useEffect(
+    () => setValue(STORAGE_KEY_FAVORITE_LIST, favoriteCityCodes),
+    [favoriteCityCodes]
+  );
 
   return {
     form,
