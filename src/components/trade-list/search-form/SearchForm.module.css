@@ -8,3 +8,20 @@
   display: flex;
   gap: 0.5rem;
 }
+
+.favoriteItems button {
+  display: flex;
+  align-items: center;
+}
+
+.favoriteItems button .removeIcon {
+  margin-left: 0.25rem;
+  font-size: 1rem;
+  color: var(--color-font-gray);
+  transform: translateY(1px);
+  transition: color 300ms ease;
+}
+
+.favoriteItems button .removeIcon:hover {
+  color: var(--color-red);
+}

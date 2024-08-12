@@ -1,4 +1,6 @@
 import { FC } from "react";
+import { FaBeer, FaTimes } from "react-icons/fa";
+import { TiTimes } from "react-icons/ti";
 
 import Button from "@/components/element/button/Button";
 import Input from "@/components/element/input/Input";
@@ -45,11 +47,6 @@ const SearchForm: FC<SearchFormProps> = () => {
         <Button type="submit" color="primary">
           검색
         </Button>
-        {registered && (
-          <Button color="red" onClick={onRemoveFavorite}>
-            삭제
-          </Button>
-        )}
         {!registered && (
           <Button color="yellow" onClick={onRegistFavorite}>
             즐겨찾기
@@ -64,6 +61,16 @@ const SearchForm: FC<SearchFormProps> = () => {
             onClick={() => onClickFavorite(item.cityCode)}
           >
             {item.label}
+            <span
+              role="button"
+              className={styles.removeIcon}
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemoveFavorite(item.cityCode);
+              }}
+            >
+              <FaTimes />
+            </span>
           </Button>
         ))}
       </ul>

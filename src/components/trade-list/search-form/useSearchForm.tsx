@@ -20,7 +20,7 @@ interface Return {
   onChangeCityCode: (cityCode: string) => void;
   onChangeYearMonth: (yearMonth: string) => void;
   onRegistFavorite: () => void;
-  onRemoveFavorite: () => void;
+  onRemoveFavorite: (cityCode: string) => void;
   onClickSearch: (e?: FormEvent) => void;
   onClickFavorite: (cityCode: string) => void;
 }
@@ -67,8 +67,8 @@ const useSearchForm = (): Return => {
     setFavoriteCityCodes([...favoriteCityCodes, form.cityCode]);
   };
 
-  const onRemoveFavorite = () => {
-    setFavoriteCityCodes(favoriteCityCodes.filter((item) => item !== form.cityCode));
+  const onRemoveFavorite = (cityCode: string) => {
+    setFavoriteCityCodes(favoriteCityCodes.filter((item) => item !== cityCode));
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
