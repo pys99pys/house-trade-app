@@ -21,12 +21,12 @@ const SearchForm: FC<SearchFormProps> = () => {
     onRegistFavorite,
     onRemoveFavorite,
     onClickFavorite,
-    onSubmit,
+    onClickSearch,
   } = useSearchForm();
 
   return (
     <>
-      <form className={styles.form} onSubmit={onSubmit}>
+      <form className={styles.form} onSubmit={onClickSearch}>
         <Select onChange={onChangeCityName}>
           {getCityNameItems().map((cityName) => (
             <option key={cityName} value={cityName}>

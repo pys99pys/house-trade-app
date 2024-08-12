@@ -23,8 +23,8 @@ interface Return {
   onChangeYearMonth: (yearMonth: string) => void;
   onRegistFavorite: () => void;
   onRemoveFavorite: () => void;
+  onClickSearch: (e?: FormEvent) => void;
   onClickFavorite: (cityCode: string) => void;
-  onSubmit: (e?: FormEvent) => void;
 }
 
 const useSearchForm = (): Return => {
@@ -80,16 +80,22 @@ const useSearchForm = (): Return => {
     setFavoriteCityCodes(favoriteCityCodes.filter((item) => item !== form.cityCode));
   };
 
+  const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
+    push(`/trade-list?yearMonth=${yearMonth}&cityCode=${cityCode}`);
+  };
+
+  const onClickSearch = (e?: FormEvent) => {
+    e?.preventDefault();
+
+    onSubmit({ yearMonth: form.yearMonth, cityCode: form.cityCode });
+  };
+
   const onClickFavorite = (cityCode: string) => {
     const cityName = getCityNameWithCode(cityCode);
     const afterForm = { ...form, cityName, cityCode };
 
     setForm(afterForm);
-  };
-
-  const onSubmit = (e?: FormEvent) => {
-    e?.preventDefault();
-    push(`/trade-list?yearMonth=${form.yearMonth}&cityCode=${form.cityCode}`);
+    onSubmit({ yearMonth: form.yearMonth, cityCode });
   };
 
   useDidMount(setDefaultFavoriteCityCodes);
@@ -109,8 +115,8 @@ const useSearchForm = (): Return => {
     onChangeYearMonth,
     onRegistFavorite,
     onRemoveFavorite,
+    onClickSearch,
     onClickFavorite,
-    onSubmit,
   };
 };
 
