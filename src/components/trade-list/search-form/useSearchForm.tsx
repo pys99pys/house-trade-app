@@ -81,7 +81,7 @@ const useSearchForm = (): Return => {
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
-    push(`/trade-list?yearMonth=${yearMonth}&cityCode=${cityCode}`);
+    push(`/trade-list?form=${JSON.stringify({ yearMonth, cityCode })}`);
   };
 
   const onClickSearch = (e?: FormEvent) => {

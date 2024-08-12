@@ -3,18 +3,35 @@ import { getTradeList } from "@/utils/crawler";
 
 import Client from "./client";
 
-const page = async ({
-  searchParams,
-}: {
-  searchParams: { yearMonth?: string; cityCode?: string };
-}) => {
+const parseFormParams = (
+  formParams?: string
+): { cityCode?: string; yearMonth?: string } => {
+  try {
+    if (!formParams) {
+      throw undefined;
+    }
+
+    const parsedFormParams = JSON.parse(formParams);
+
+    return {
+      cityCode: parsedFormParams.cityCode,
+      yearMonth: parsedFormParams.yearMonth,
+    };
+  } catch {
+    return { cityCode: "", yearMonth: "" };
+  }
+};
+
+const page = async ({ searchParams }: { searchParams: { form?: string } }) => {
   let count = 0;
   let tradeItems: TradeItem[] = [];
 
-  if (searchParams.cityCode && searchParams.yearMonth) {
+  const { cityCode, yearMonth } = parseFormParams(searchParams.form);
+
+  if (cityCode && yearMonth) {
     const result = await getTradeList({
-      area: searchParams.cityCode,
-      createDt: searchParams.yearMonth,
+      area: cityCode,
+      createDt: yearMonth,
     });
 
     count = result.count;
