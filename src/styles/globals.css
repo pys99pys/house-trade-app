@@ -34,14 +34,3 @@ button {
   font-family: "Noto Sans KR", sans-serif;
   color: var(--color-font);
 }
-
-header {
-  height: 5rem;
-  font-size: 1.5rem;
-  font-weight: 700;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--color-white);
-  box-shadow: 0 0 10px #ddd;
-}

@@ -11,11 +11,11 @@ interface TradeListProps {
 
 const TradeList: FC<TradeListProps> = ({ count, tradeItems }) => {
   return (
-    <div>
+    <>
       <SearchForm />
 
       <div>{JSON.stringify(tradeItems)}</div>
-    </div>
+    </>
   );
 };
 

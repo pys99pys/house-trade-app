@@ -1,3 +1,24 @@
+.header {
+  height: 5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-white);
+  box-shadow: 0 0 10px #ddd;
+}
+
+.logo {
+  text-decoration: none;
+  color: var(--color-black);
+  transition: 300ms ease;
+}
+
+.logo:hover {
+  color: var(--color-primary);
+}
+
 .main {
   width: 1024px;
   margin: 0 auto;

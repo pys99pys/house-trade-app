@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
+import { TRADE_LIST_PATH } from "@/constants/paths";
 import "@/styles/globals.css";
 
 import styles from "./layout.module.css";
@@ -26,8 +28,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <header>
-          <h1>아파트 실거래가 조회</h1>
+        <header className={styles.header}>
+          <h1>
+            <Link href={TRADE_LIST_PATH} className={styles.logo}>
+              아파트 실거래가 조회
+            </Link>
+          </h1>
         </header>
         <main className={styles.main}>{children}</main>
       </body>
