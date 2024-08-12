@@ -3,7 +3,7 @@ import { FC } from "react";
 import Button from "@/components/element/button/Button";
 import Input from "@/components/element/input/Input";
 import Select from "@/components/element/select/Select";
-import { getCityCodeItems, getCityNameItems } from "@/utils/cityDatas";
+import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
 
 import styles from "./SearchForm.module.css";
 import useSearchForm from "./useSearchForm";

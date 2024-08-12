@@ -10,7 +10,7 @@ import {
   getCityNameWithCode,
   getFirstCityCode,
   getFirstCityName,
-} from "@/utils/cityDatas";
+} from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
 import { getValue, setValue } from "@/utils/storage";
 
@@ -81,7 +81,7 @@ const useSearchForm = (): Return => {
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
-    push(`/trade-list?form=${JSON.stringify({ yearMonth, cityCode })}`);
+    push(`/trade-list?cityCode=${cityCode}&yearMonth=${yearMonth}`);
   };
 
   const onClickSearch = (e?: FormEvent) => {
