@@ -1,13 +1,14 @@
-import TradeList from "@/components/trade-list/Tradelist";
 import { TradeItem } from "@/interfaces/TradeItem";
 import { getTradeList } from "@/utils/crawler";
+
+import Client from "./client";
 
 const page = async ({
   searchParams,
 }: {
   searchParams: { yearMonth?: string; cityCode?: string };
 }) => {
-  let count: number = 0;
+  let count = 0;
   let tradeItems: TradeItem[] = [];
 
   if (searchParams.cityCode && searchParams.yearMonth) {
@@ -20,7 +21,7 @@ const page = async ({
     tradeItems = result.list;
   }
 
-  return <TradeList count={count} tradeItems={tradeItems} />;
+  return <Client count={count} tradeItems={tradeItems} />;
 };
 
 export default page;

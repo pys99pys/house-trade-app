@@ -1,9 +1,8 @@
-"use client";
-
 import { FC } from "react";
 
-import SearchForm from "@/components/search-form/SearchForm";
 import { TradeItem } from "@/interfaces/TradeItem";
+
+import SearchForm from "./search-form/SearchForm";
 
 interface TradeListProps {
   count: number;

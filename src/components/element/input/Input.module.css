@@ -1,0 +1,22 @@
+.input {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 300ms ease;
+}
+
+.input:hover,
+.input:focus {
+  border-color: var(--color-primary);
+}
+
+.default {
+  height: var(--form-height);
+  padding: 0 1rem;
+}
+
+.small {
+  height: var(--form-height-small);
+  padding: 0 0.75rem;
+}

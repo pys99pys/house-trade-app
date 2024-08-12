@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import "@/styles/globals.css";
 
+import styles from "./layout.module.css";
+
 export const metadata: Metadata = {
   title: "아파트 실거래가 조회",
   description: "아파트 실거래가 조회",
@@ -27,7 +29,7 @@ export default function RootLayout({
         <header>
           <h1>아파트 실거래가 조회</h1>
         </header>
-        <main>{children}</main>
+        <main className={styles.main}>{children}</main>
       </body>
     </html>
   );

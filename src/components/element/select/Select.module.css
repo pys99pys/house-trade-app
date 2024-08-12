@@ -1,0 +1,17 @@
+.select {
+  min-width: 10rem;
+  height: var(--form-height);
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background-color: white;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 300ms ease;
+}
+
+.select:hover,
+.select:focus {
+  border-color: var(--color-primary);
+  cursor: pointer;
+}
