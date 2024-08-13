@@ -2,11 +2,11 @@ export interface TradeItem {
   isNewRecord: boolean;
   apartName: string;
   address: string;
-  buildedYear: number;
-  householdsNumber: number;
+  buildedYear: number | null;
+  householdsNumber: number | null;
   tradeDate: string;
-  size: number;
-  floor: number;
+  size: number | null;
+  floor: number | null;
   tradeAmount: number;
   maxTradeAmount: number;
 }

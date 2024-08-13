@@ -1,5 +1,6 @@
-import { TradeItem } from "@/interfaces/TradeItem";
 import cheerio, { Cheerio } from "cheerio";
+
+import { TradeItem } from "@/interfaces/TradeItem";
 
 const calcIsTradeListTable = (table: Cheerio<any>): boolean =>
   !!table.find(`td:contains("단지명")`).text();
@@ -34,21 +35,23 @@ const parseFirstCell = (
   cell: Cheerio<any>
 ): {
   apartName: string;
-  buildedYear: number;
-  householdsNumber: number;
+  buildedYear: number | null;
+  householdsNumber: number | null;
   address: string;
 } => {
-  const text = splitCellText(cell.text());
-  const apartName = text[0];
-  const buildedYear = parseNumber(text[1].split(" ")[0]);
-  const householdsNumber = parseNumber(text[2].split(" / ")[0]);
-  const address = text[3];
+  const texts = splitCellText(cell.text());
+
+  const buildedYearText = texts.find((text) => text.includes("년"));
+  const householdsNumberText = texts.find((text) => text.includes("세대"));
+  const addressText = texts.find((text, i) => i > 0 && text.includes("동"));
 
   return {
-    apartName,
-    buildedYear,
-    householdsNumber,
-    address,
+    apartName: texts[0],
+    buildedYear: buildedYearText ? parseNumber(buildedYearText.split(" ")[0]) : null,
+    householdsNumber: householdsNumberText
+      ? parseNumber(householdsNumberText.split(" / ")[0])
+      : null,
+    address: addressText ?? "",
   };
 };
 
@@ -56,18 +59,18 @@ const parseSecondCell = (
   cell: Cheerio<any>
 ): {
   tradeDate: string;
-  size: number;
-  floor: number;
+  size: number | null;
+  floor: number | null;
 } => {
-  const text = splitCellText(cell.text());
-  const tradeDate = "20" + text[0].split(" ")[0].replaceAll(".", "-");
-  const floor = parseNumber(text[0].split(" ")[1]);
-  const size = Number(text[1].replace("㎡", ""));
+  const texts = splitCellText(cell.text());
+
+  const sizeText = texts.find((text) => text.includes("㎡"));
+  const floorText = texts.find((text) => text.includes("층"));
 
   return {
-    tradeDate,
-    size,
-    floor,
+    tradeDate: "20" + texts[0].split(" ")[0].replaceAll(".", "-"),
+    size: sizeText ? Number(sizeText.replace("㎡", "")) : null,
+    floor: floorText ? parseNumber(floorText.split(" ")[1]) : null,
   };
 };
 
@@ -78,17 +81,16 @@ const parseThirdCell = (
   tradeAmount: number;
   maxTradeAmount: number;
 } => {
-  const text = splitCellText(cell.text());
-  const isNewRecord = text[0].includes("신");
-  const tradeAmount = parseAmount(text[0].split(" (신)")[0]);
-  const maxTradeAmount = parseAmount(
-    text[1].includes("↑") ? text[2].split(" ")[0] : text[1].split(" ")[0]
-  );
+  const texts = splitCellText(cell.text());
+
+  const isNewRecord = texts.some((text) => text.includes("(신)"));
+  const tradeAmountText = texts[0];
+  const maxTradeAmountText = texts.length === 4 ? texts[2] : texts[1];
 
   return {
     isNewRecord,
-    tradeAmount,
-    maxTradeAmount,
+    tradeAmount: parseAmount(tradeAmountText.split(" (신)")[0]),
+    maxTradeAmount: parseAmount(maxTradeAmountText.split(" ")[0]),
   };
 };
 

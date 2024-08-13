@@ -116,24 +116,38 @@ const TradeListTable: FC<TradeListTableProps> = ({ tradeItems }) => {
                 <>
                   {item.apartName}
                   <small>
-                    ({item.floor}층/
-                    {item.buildedYear}년식/
-                    {parseToNumberFormat(item.householdsNumber)}세대)
+                    {(() => {
+                      const subTexts: string[] = [];
+
+                      if (item.floor !== null) subTexts.push(`${item.floor}층`);
+                      if (item.buildedYear !== null)
+                        subTexts.push(`${item.buildedYear}년식`);
+                      if (item.householdsNumber !== null)
+                        subTexts.push(`${item.householdsNumber}세대`);
+
+                      return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
+                    })()}
                   </small>
                 </>
               )}
               {createBodyCell(
-                <>
-                  {parseToFlatSize(item.size)}평
-                  <small>({parseToAreaSize(item.size)})㎡</small>
-                </>
+                item.size && (
+                  <>
+                    {parseToFlatSize(item.size)}평
+                    <small>({parseToAreaSize(item.size)}㎡)</small>
+                  </>
+                )
               )}
               {createBodyCell(
                 <span className={cx({ [styles.newRecord]: item.isNewRecord })}>
                   {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
                 </span>
               )}
-              {createBodyCell(<>{parseToAmount(item.maxTradeAmount)}억원</>)}
+              {createBodyCell(
+                item.maxTradeAmount > 0 ? (
+                  <>{parseToAmount(item.maxTradeAmount)}억원</>
+                ) : null
+              )}
             </div>
           ))}
         </div>
