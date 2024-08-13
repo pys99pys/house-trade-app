@@ -6,6 +6,7 @@ import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
 import { TradeItem } from "@/interfaces/TradeItem";
 import { parseToAverageAmountText } from "@/utils/formatter";
+import { debounce } from "@/utils/helper";
 import { getValue, setValue } from "@/utils/storage";
 import {
   createSavedTradeItemValue,
@@ -96,7 +97,9 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
 
   const onChangePage = (page: number) => setPage(page);
 
-  const onChangeApartName = (apartName: string) => setFilter({ ...filter, apartName });
+  const onChangeApartName = debounce((apartName: string) =>
+    setFilter({ ...filter, apartName })
+  );
 
   const onToggleOnlyBaseSize = () =>
     setFilter({

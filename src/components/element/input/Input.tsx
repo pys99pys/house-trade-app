@@ -7,8 +7,8 @@ interface InputProps {
   width?: string;
   size?: "default" | "small";
   placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 const Input: FC<InputProps> = ({
@@ -27,7 +27,7 @@ const Input: FC<InputProps> = ({
       })}
       placeholder={placeholder}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => onChange?.(e.target.value)}
     />
   );
 };
