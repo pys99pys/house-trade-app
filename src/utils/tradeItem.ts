@@ -7,12 +7,10 @@ export const createSavedItemKey = (item: TradeItem) =>
 export const filterItems = (
   items: TradeItem[],
   {
-    cityCode,
     savedList,
     filter,
   }: {
-    cityCode: string;
-    savedList: SavedItem[];
+    savedList: string[];
     filter: FilterType;
   }
 ) =>
@@ -25,11 +23,7 @@ export const filterItems = (
       filter.onlyBaseSize && item.size ? item.size > 83 && item.size < 85 : true;
 
     const includedSavedList = filter.onlySavedList
-      ? savedList.some(
-          (savedItem) =>
-            savedItem.cityCode === cityCode &&
-            savedItem.apartList.includes(item.apartName)
-        )
+      ? savedList.some((savedItem) => savedItem === createSavedItemKey(item))
       : true;
 
     return includedApartName && includedBaseSize && includedSavedList;

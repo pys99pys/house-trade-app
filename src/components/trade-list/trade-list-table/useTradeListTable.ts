@@ -64,11 +64,10 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
   const filteredItems = useMemo(
     () =>
       filterItems(tradeItems, {
-        cityCode: cityCodeParam,
-        savedList: originSavedList,
+        savedList,
         filter,
       }),
-    [tradeItems, cityCodeParam, originSavedList, filter]
+    [tradeItems, savedList, filter]
   );
 
   const list = useMemo(() => {
