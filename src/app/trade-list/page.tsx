@@ -19,7 +19,7 @@ const Page = async ({ searchParams }: Params) => {
     tradeItems = result.list;
   }
 
-  return <Client tradeItems={tradeItems} />;
+  return <Client updatedAt={+new Date()} tradeItems={tradeItems} />;
 };
 
 export default Page;

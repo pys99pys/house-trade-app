@@ -7,15 +7,23 @@ import TradeList from "@/components/trade-list/Tradelist";
 import { TradeItem } from "@/interfaces/TradeItem";
 
 interface ClientProps {
+  updatedAt: number;
   tradeItems: TradeItem[];
 }
 
-const Client: FC<ClientProps> = ({ tradeItems }) => {
+const Client: FC<ClientProps> = ({ updatedAt, tradeItems }) => {
   const [isReady, setIsReady] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setIsReady(true);
   }, []);
+
+  useEffect(() => {
+    setLoading(false);
+  }, [updatedAt]);
+
+  console.log("updatedAt: ", updatedAt);
 
   if (!isReady) {
     return null;
@@ -23,7 +31,7 @@ const Client: FC<ClientProps> = ({ tradeItems }) => {
 
   return (
     <Layout>
-      <TradeList tradeItems={tradeItems} />
+      <TradeList loading={loading} tradeItems={tradeItems} setLoading={setLoading} />
     </Layout>
   );
 };

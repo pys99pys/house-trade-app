@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
@@ -31,6 +31,7 @@ interface Return {
 
 const useSearchForm = ({ onLoad }: Params): Return => {
   const { push } = useRouter();
+  const searchParams = useSearchParams();
 
   const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(
     getValue(STORAGE_KEY_FAVORITE_LIST) ?? []
@@ -76,6 +77,13 @@ const useSearchForm = ({ onLoad }: Params): Return => {
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
+    if (
+      searchParams.get("yearMonth") === yearMonth &&
+      searchParams.get("cityCode") === cityCode
+    ) {
+      return;
+    }
+
     onLoad();
     push(`/trade-list?cityCode=${cityCode}&yearMonth=${yearMonth}`);
   };
