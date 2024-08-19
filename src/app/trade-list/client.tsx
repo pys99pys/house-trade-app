@@ -23,8 +23,6 @@ const Client: FC<ClientProps> = ({ updatedAt, tradeItems }) => {
     setLoading(false);
   }, [updatedAt]);
 
-  console.log("updatedAt: ", updatedAt);
-
   if (!isReady) {
     return null;
   }

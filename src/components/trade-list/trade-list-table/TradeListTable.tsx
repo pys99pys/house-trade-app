@@ -12,7 +12,7 @@ import {
   parseToFlatSize,
   parseToNumberFormat,
 } from "@/utils/formatter";
-import { createSavedTradeItemValue } from "@/utils/tradeItem";
+import { createSavedItemKey } from "@/utils/tradeItem";
 
 import styles from "./TradeListTable.module.css";
 import useTradeListTable from "./useTradeListTable";
@@ -26,7 +26,6 @@ const PER_PAGE = 15;
 
 const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
   const {
-    cityCode,
     order,
     filter,
     page,
@@ -111,8 +110,7 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
                   key={i}
                   className={cx(styles.row, {
                     [styles.active]: savedList.some(
-                      (savedItem) =>
-                        savedItem === createSavedTradeItemValue({ cityCode, ...item })
+                      (savedItem) => savedItem === createSavedItemKey(item)
                     ),
                   })}
                   onClick={() => onClickList(item)}

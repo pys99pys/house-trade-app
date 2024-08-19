@@ -1,15 +1,8 @@
 import { FilterType } from "@/interfaces/Filter";
 import { SavedItem, TradeItem } from "@/interfaces/TradeItem";
 
-export const createSavedTradeItemValue = ({
-  cityCode,
-  apartName,
-  address,
-}: {
-  cityCode: string;
-  apartName: string;
-  address: string;
-}) => `${cityCode}_${apartName}_${address}`;
+export const createSavedItemKey = (item: TradeItem) =>
+  `${item.address.replaceAll(" ", "_")}__${item.apartName.replaceAll(" ", "_")}`;
 
 export const filterItems = (
   items: TradeItem[],
@@ -47,7 +40,7 @@ export const sortItems = (
   order: [keyof TradeItem, "asc" | "desc"]
 ): TradeItem[] => {
   return items.sort((a, b) => {
-    if (a[order[0]] > b[order[0]]) {
+    if ((a[order[0]] ?? "") > (b[order[0]] ?? "")) {
       return order[1] === "asc" ? 1 : -1;
     } else {
       return order[1] === "asc" ? -1 : 1;
