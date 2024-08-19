@@ -2,9 +2,9 @@ import { FC } from "react";
 import { FaBeer, FaTimes } from "react-icons/fa";
 import { TiTimes } from "react-icons/ti";
 
-import Button from "@/components/element/button/Button";
-import Input from "@/components/element/input/Input";
-import Select from "@/components/element/select/Select";
+import Button from "@/components/common/button/Button";
+import Input from "@/components/common/input/Input";
+import Select from "@/components/common/select/Select";
 import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
 
 import styles from "./SearchForm.module.css";

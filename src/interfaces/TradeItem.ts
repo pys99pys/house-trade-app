@@ -10,3 +10,8 @@ export interface TradeItem {
   tradeAmount: number;
   maxTradeAmount: number;
 }
+
+export interface SavedItem {
+  cityCode: string;
+  apartList: string[];
+}

@@ -1,6 +1,7 @@
 @import "reset-css";
 
 :root {
+  --container-width: 1024px;
   --font-size: 12.5px;
   --form-height: 3.25rem;
   --form-height-small: 2.75rem;

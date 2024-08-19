@@ -1,5 +1,5 @@
 import { FilterType } from "@/interfaces/Filter";
-import { TradeItem } from "@/interfaces/TradeItem";
+import { SavedItem, TradeItem } from "@/interfaces/TradeItem";
 
 export const createSavedTradeItemValue = ({
   cityCode,
@@ -19,7 +19,7 @@ export const filterItems = (
     filter,
   }: {
     cityCode: string;
-    savedList: string[];
+    savedList: SavedItem[];
     filter: FilterType;
   }
 ) =>
@@ -28,19 +28,14 @@ export const filterItems = (
       ? item.apartName.includes(filter.apartName)
       : true;
 
-    const includedBaseSize = filter.onlyBaseSize
-      ? item.size > 83 && item.size < 85
-      : true;
+    const includedBaseSize =
+      filter.onlyBaseSize && item.size ? item.size > 83 && item.size < 85 : true;
 
     const includedSavedList = filter.onlySavedList
       ? savedList.some(
           (savedItem) =>
-            savedItem ===
-            createSavedTradeItemValue({
-              cityCode,
-              apartName: item.apartName,
-              address: item.address,
-            })
+            savedItem.cityCode === cityCode &&
+            savedItem.apartList.includes(item.apartName)
         )
       : true;
 

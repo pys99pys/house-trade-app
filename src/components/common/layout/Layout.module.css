@@ -1,0 +1,54 @@
+.header {
+  background-color: var(--color-white);
+  box-shadow: 0 0 10px #ddd;
+}
+
+.header .container {
+  width: var(--container-width);
+  margin: 0 auto;
+  padding: 1.25rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: "Black Han Sans";
+  font-size: 1.25rem;
+  color: var(--color-primary);
+}
+
+.header h1 .logo {
+  font-size: 1.5rem;
+}
+
+.header h1 .text {
+  transform: translateY(2px);
+}
+
+.header nav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.header nav a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-font-gray);
+}
+
+.header nav a.active {
+  color: var(--color-primary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.main {
+  width: 1024px;
+  margin: 0 auto;
+  padding: 3rem 0 8rem;
+}

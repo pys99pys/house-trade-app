@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import { TRADE_LIST_PATH } from "@/constants/paths";
 import "@/styles/globals.css";
-
-import styles from "./layout.module.css";
 
 export const metadata: Metadata = {
   title: "아파트 실거래가 조회",
@@ -23,16 +19,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@100..900&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body>
-        <header className={styles.header}>
-          <h1>아파트 실거래가 조회</h1>
-        </header>
-        <main className={styles.main}>{children}</main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

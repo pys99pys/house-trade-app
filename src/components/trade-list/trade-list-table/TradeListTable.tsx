@@ -1,9 +1,9 @@
 import cx from "classnames";
 import { FC, ReactNode } from "react";
 
-import Button from "@/components/element/button/Button";
-import Input from "@/components/element/input/Input";
-import Pagination from "@/components/element/pagination/Pagination";
+import Button from "@/components/common/button/Button";
+import Input from "@/components/common/input/Input";
+import Pagination from "@/components/common/pagination/Pagination";
 import { TradeItem } from "@/interfaces/TradeItem";
 import {
   parseToAmount,

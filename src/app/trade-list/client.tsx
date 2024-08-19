@@ -2,6 +2,7 @@
 
 import { FC, useEffect, useState } from "react";
 
+import Layout from "@/components/common/layout/Layout";
 import TradeList from "@/components/trade-list/Tradelist";
 import { TradeItem } from "@/interfaces/TradeItem";
 
@@ -20,7 +21,11 @@ const Client: FC<ClientProps> = ({ tradeItems }) => {
     return null;
   }
 
-  return <TradeList tradeItems={tradeItems} />;
+  return (
+    <Layout>
+      <TradeList tradeItems={tradeItems} />
+    </Layout>
+  );
 };
 
 export default Client;
