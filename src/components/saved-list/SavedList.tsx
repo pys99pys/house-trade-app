@@ -7,7 +7,7 @@ interface SavedListProps {}
 const SavedList: FC<SavedListProps> = () => {
   useSavedList();
 
-  return <div>SavedList</div>;
+  return <div>구현중</div>;
 };
 
 export default SavedList;
