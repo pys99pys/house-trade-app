@@ -18,12 +18,13 @@ import styles from "./TradeListTable.module.css";
 import useTradeListTable from "./useTradeListTable";
 
 interface TradeListTableProps {
+  loading: boolean;
   tradeItems: TradeItem[];
 }
 
 const PER_PAGE = 15;
 
-const TradeListTable: FC<TradeListTableProps> = ({ tradeItems }) => {
+const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
   const {
     cityCode,
     order,
@@ -97,62 +98,70 @@ const TradeListTable: FC<TradeListTableProps> = ({ tradeItems }) => {
         </div>
 
         <div className={styles.body}>
-          {list.length === 0 && <div className={styles.empty}>데이터 없음</div>}
+          {loading && <div className={styles.empty}>조회중...</div>}
 
-          {list.map((item, i) => (
-            <div
-              key={i}
-              className={cx(styles.row, {
-                [styles.active]: savedList.some(
-                  (savedItem) =>
-                    savedItem === createSavedTradeItemValue({ cityCode, ...item })
-                ),
-              })}
-              onClick={() => onClickList(item)}
-            >
-              {createBodyCell(<>{item.tradeDate}</>)}
-              {createBodyCell(<>{item.address}</>)}
-              {createBodyCell(
-                <>
-                  {item.apartName}
-                  <small>
-                    {(() => {
-                      const subTexts: string[] = [];
+          {!loading && list.length === 0 && (
+            <div className={styles.empty}>데이터 없음</div>
+          )}
 
-                      if (item.floor !== null) subTexts.push(`${item.floor}층`);
-                      if (item.buildedYear !== null)
-                        subTexts.push(`${item.buildedYear}년식`);
-                      if (item.householdsNumber !== null)
-                        subTexts.push(`${item.householdsNumber}세대`);
+          {!loading && (
+            <>
+              {list.map((item, i) => (
+                <div
+                  key={i}
+                  className={cx(styles.row, {
+                    [styles.active]: savedList.some(
+                      (savedItem) =>
+                        savedItem === createSavedTradeItemValue({ cityCode, ...item })
+                    ),
+                  })}
+                  onClick={() => onClickList(item)}
+                >
+                  {createBodyCell(<>{item.tradeDate}</>)}
+                  {createBodyCell(<>{item.address}</>)}
+                  {createBodyCell(
+                    <>
+                      {item.apartName}
+                      <small>
+                        {(() => {
+                          const subTexts: string[] = [];
 
-                      return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
-                    })()}
-                  </small>
-                </>
-              )}
-              {createBodyCell(
-                item.size && (
-                  <>
-                    {parseToFlatSize(item.size)}평
-                    <small>({parseToAreaSize(item.size)}㎡)</small>
-                  </>
-                )
-              )}
-              {createBodyCell(
-                <span className={cx({ [styles.newRecord]: item.isNewRecord })}>
-                  {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
-                </span>
-              )}
-              {createBodyCell(
-                item.maxTradeAmount > 0 ? (
-                  <>{parseToAmount(item.maxTradeAmount)}억원</>
-                ) : null
-              )}
-            </div>
-          ))}
+                          if (item.floor !== null) subTexts.push(`${item.floor}층`);
+                          if (item.buildedYear !== null)
+                            subTexts.push(`${item.buildedYear}년식`);
+                          if (item.householdsNumber !== null)
+                            subTexts.push(`${item.householdsNumber}세대`);
+
+                          return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
+                        })()}
+                      </small>
+                    </>
+                  )}
+                  {createBodyCell(
+                    item.size && (
+                      <>
+                        {parseToFlatSize(item.size)}평
+                        <small>({parseToAreaSize(item.size)}㎡)</small>
+                      </>
+                    )
+                  )}
+                  {createBodyCell(
+                    <span className={cx({ [styles.newRecord]: item.isNewRecord })}>
+                      {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
+                    </span>
+                  )}
+                  {createBodyCell(
+                    item.maxTradeAmount > 0 ? (
+                      <>{parseToAmount(item.maxTradeAmount)}억원</>
+                    ) : null
+                  )}
+                </div>
+              ))}
+            </>
+          )}
         </div>
 
-        {count > PER_PAGE && (
+        {!loading && count > PER_PAGE && (
           <div className={styles.pagination}>
             <Pagination
               per={PER_PAGE}

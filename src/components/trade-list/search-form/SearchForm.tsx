@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { FaBeer, FaTimes } from "react-icons/fa";
-import { TiTimes } from "react-icons/ti";
+import { FaTimes } from "react-icons/fa";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
@@ -10,9 +9,11 @@ import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
 import styles from "./SearchForm.module.css";
 import useSearchForm from "./useSearchForm";
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  onLoad: () => void;
+}
 
-const SearchForm: FC<SearchFormProps> = () => {
+const SearchForm: FC<SearchFormProps> = ({ onLoad }) => {
   const {
     form,
     registered,
@@ -24,7 +25,7 @@ const SearchForm: FC<SearchFormProps> = () => {
     onRemoveFavorite,
     onClickFavorite,
     onClickSearch,
-  } = useSearchForm();
+  } = useSearchForm({ onLoad });
 
   return (
     <>

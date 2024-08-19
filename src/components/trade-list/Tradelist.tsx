@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { TradeItem } from "@/interfaces/TradeItem";
 
@@ -11,13 +11,17 @@ interface TradeListProps {
 }
 
 const TradeList: FC<TradeListProps> = ({ tradeItems }) => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => setLoading(false), [tradeItems]);
+
   return (
     <div className={styles.tradeList}>
       <div>
-        <SearchForm />
+        <SearchForm onLoad={() => setLoading(true)} />
       </div>
       <div>
-        <TradeListTable tradeItems={tradeItems} />
+        <TradeListTable loading={loading} tradeItems={tradeItems} />
       </div>
     </div>
   );

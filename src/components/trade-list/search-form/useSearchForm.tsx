@@ -12,6 +12,10 @@ import {
 import { getBeforeYearMonth } from "@/utils/date";
 import { getValue, setValue } from "@/utils/storage";
 
+interface Params {
+  onLoad: () => void;
+}
+
 interface Return {
   form: SearchFormType;
   favoriteList: FavoriteItem[];
@@ -25,7 +29,7 @@ interface Return {
   onClickFavorite: (cityCode: string) => void;
 }
 
-const useSearchForm = (): Return => {
+const useSearchForm = ({ onLoad }: Params): Return => {
   const { push } = useRouter();
 
   const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(
@@ -72,12 +76,12 @@ const useSearchForm = (): Return => {
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
+    onLoad();
     push(`/trade-list?cityCode=${cityCode}&yearMonth=${yearMonth}`);
   };
 
   const onClickSearch = (e?: FormEvent) => {
     e?.preventDefault();
-
     onSubmit({ yearMonth: form.yearMonth, cityCode: form.cityCode });
   };
 

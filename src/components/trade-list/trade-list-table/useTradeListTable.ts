@@ -108,8 +108,6 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
     );
   };
 
-  console.log("savedList: ", savedList);
-
   const onChangePage = (page: number) => setPage(page);
 
   const onChangeApartName = debounce((apartName: string) =>
