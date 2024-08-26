@@ -11,7 +11,11 @@ export interface TradeItem {
   maxTradeAmount: number;
 }
 
+export interface SavedApartItem {
+  apartName: string;
+  address: string;
+}
 export interface SavedItem {
   cityCode: string;
-  apartList: string[];
+  apartList: SavedApartItem[];
 }

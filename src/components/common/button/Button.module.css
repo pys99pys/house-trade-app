@@ -15,7 +15,8 @@
 
 .button.smallSize {
   height: var(--form-height-small);
-  padding: 0 1.5rem;
+  padding: 0 1rem;
+  font-size: 0.95rem;
 }
 
 .button.xsmallSize {

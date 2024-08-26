@@ -1,16 +1,16 @@
 import { FilterType } from "@/interfaces/Filter";
-import { SavedItem, TradeItem } from "@/interfaces/TradeItem";
+import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
 
-export const createSavedItemKey = (item: TradeItem) =>
-  `${item.address.replaceAll(" ", "_")}__${item.apartName.replaceAll(" ", "_")}`;
+export const compareSavedApartItem = (a: SavedApartItem, b: SavedApartItem) =>
+  a.address === b.address && a.apartName === b.apartName;
 
 export const filterItems = (
   items: TradeItem[],
   {
-    savedList,
+    savedApartList,
     filter,
   }: {
-    savedList: string[];
+    savedApartList: SavedApartItem[];
     filter: FilterType;
   }
 ) =>
@@ -23,7 +23,9 @@ export const filterItems = (
       filter.onlyBaseSize && item.size ? item.size > 83 && item.size < 85 : true;
 
     const includedSavedList = filter.onlySavedList
-      ? savedList.some((savedItem) => savedItem === createSavedItemKey(item))
+      ? savedApartList.some((savedApartItem) =>
+          compareSavedApartItem(item, savedApartItem)
+        )
       : true;
 
     return includedApartName && includedBaseSize && includedSavedList;

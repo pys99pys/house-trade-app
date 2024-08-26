@@ -2,14 +2,15 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { STORAGE_KEY_ORDER, STORAGE_KEY_SAVED_APART_LIST } from "@/constants/storageKeys";
+import useSavedList from "@/hooks/useSavedList";
 import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
-import { SavedItem, TradeItem } from "@/interfaces/TradeItem";
+import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
 import { parseToAverageAmountText } from "@/utils/formatter";
 import { debounce } from "@/utils/helper";
 import { getValue, setValue } from "@/utils/storage";
 import {
-  createSavedItemKey,
+  compareSavedApartItem,
   filterItems,
   sliceItems,
   sortItems,
@@ -26,7 +27,7 @@ interface Return {
   averageAmount: number;
   count: number;
   list: TradeItem[];
-  savedList: string[];
+  savedApartList: SavedApartItem[];
 
   onChangeOrder: (column: OrderType[0]) => void;
   onChangePage: (page: number) => void;
@@ -42,12 +43,11 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
   const params = useSearchParams();
   const cityCodeParam = params.get("cityCode") ?? "";
 
+  const { savedList, saveItem, removeItem } = useSavedList();
+
   const [page, setPage] = useState<number>(1);
   const [order, setOrder] = useState<OrderType>(
     getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]
-  );
-  const [originSavedList, setOriginSavedList] = useState<SavedItem[]>(
-    getValue(STORAGE_KEY_SAVED_APART_LIST) ?? []
   );
   const [filter, setFilter] = useState<FilterType>({
     apartName: "",
@@ -55,19 +55,18 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
     onlySavedList: false,
   });
 
-  const savedList = useMemo(
-    () =>
-      originSavedList.find((item) => item.cityCode === cityCodeParam)?.apartList ?? [],
-    [cityCodeParam, originSavedList]
+  const savedApartList = useMemo(
+    () => savedList.find((item) => item.cityCode === cityCodeParam)?.apartList ?? [],
+    [cityCodeParam, savedList]
   );
 
   const filteredItems = useMemo(
     () =>
       filterItems(tradeItems, {
-        savedList,
+        savedApartList,
         filter,
       }),
-    [tradeItems, savedList, filter]
+    [tradeItems, savedApartList, filter]
   );
 
   const list = useMemo(() => {
@@ -88,27 +87,19 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
       order[0] === column ? (order[1] === "asc" ? "desc" : "asc") : "asc",
     ]);
 
-  const onClickList = (tradeItem: TradeItem) => {
-    const savedValue = createSavedItemKey(tradeItem);
-
-    const hasSavedList = originSavedList.some((item) => item.cityCode === cityCodeParam);
-    const hasSavedApartList = savedList.some((item) => item === savedValue);
-    const afterApartList = hasSavedApartList
-      ? savedList.filter((item) => item !== savedValue)
-      : [...savedList, savedValue];
-
-    setOriginSavedList(
-      (hasSavedList
-        ? originSavedList.reduce((acc, item) => {
-            if (item.cityCode === cityCodeParam) {
-              return [...acc, { cityCode: cityCodeParam, apartList: afterApartList }];
-            }
-
-            return [...acc, item];
-          }, [] as SavedItem[])
-        : [...originSavedList, { cityCode: cityCodeParam, apartList: afterApartList }]
-      ).filter((item) => item.apartList.length > 0)
+  const onClickList = (tradeItem: {
+    address: TradeItem["address"];
+    apartName: TradeItem["apartName"];
+  }) => {
+    const hasSavedApartList = savedApartList.some((item) =>
+      compareSavedApartItem(item, tradeItem)
     );
+
+    if (hasSavedApartList) {
+      removeItem(cityCodeParam, tradeItem);
+    } else {
+      saveItem(cityCodeParam, tradeItem);
+    }
   };
 
   const onChangePage = (page: number) => setPage(page);
@@ -135,10 +126,7 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
   );
   useEffect(() => setPage(1), [filteredItems]);
   useEffect(() => setValue(STORAGE_KEY_ORDER, order), [order]);
-  useEffect(
-    () => setValue(STORAGE_KEY_SAVED_APART_LIST, originSavedList),
-    [originSavedList]
-  );
+  useEffect(() => setValue(STORAGE_KEY_SAVED_APART_LIST, savedList), [savedList]);
 
   return {
     order,
@@ -147,7 +135,7 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
     averageAmount,
     count,
     list,
-    savedList,
+    savedApartList,
     onChangeOrder,
     onChangePage,
     onClickList,

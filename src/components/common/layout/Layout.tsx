@@ -1,6 +1,6 @@
 import cx from "classnames";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FC, ReactNode } from "react";
 import { FaRegBuilding } from "react-icons/fa";
 
@@ -14,12 +14,13 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   const pathname = usePathname();
+  const { push } = useRouter();
 
   return (
     <>
       <header className={styles.header}>
         <div className={styles.container}>
-          <h1>
+          <h1 onClick={() => push(TRADE_LIST_PATH)}>
             <FaRegBuilding className={styles.logo} />
             <span className={styles.text}>아파트 실거래가 조회</span>
           </h1>

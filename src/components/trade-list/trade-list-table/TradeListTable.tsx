@@ -10,9 +10,8 @@ import {
   parseToAmountText,
   parseToAreaSize,
   parseToFlatSize,
-  parseToNumberFormat,
 } from "@/utils/formatter";
-import { createSavedItemKey } from "@/utils/tradeItem";
+import { compareSavedApartItem } from "@/utils/tradeItem";
 
 import styles from "./TradeListTable.module.css";
 import useTradeListTable from "./useTradeListTable";
@@ -32,7 +31,7 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
     averageAmount,
     count,
     list,
-    savedList,
+    savedApartList,
     onChangeOrder,
     onChangePage,
     onClickList,
@@ -109,8 +108,8 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
                 <div
                   key={i}
                   className={cx(styles.row, {
-                    [styles.active]: savedList.some(
-                      (savedItem) => savedItem === createSavedItemKey(item)
+                    [styles.active]: savedApartList.some((savedApartItem) =>
+                      compareSavedApartItem(item, savedApartItem)
                     ),
                   })}
                   onClick={() => onClickList(item)}
