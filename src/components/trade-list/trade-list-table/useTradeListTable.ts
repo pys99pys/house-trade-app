@@ -109,27 +109,20 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
 
   const onChangePage = (page: number) => setPage(page);
 
-  const onChangeApartName = (apartName: string) => {
+  const onChangeFilter = (afterFilter: Partial<FilterType>) => {
+    setFilter({ ...filter, ...afterFilter });
     setPage(1);
-    setFilter({ ...filter, apartName });
   };
 
-  const onToggleOnlyBaseSize = () => {
-    setPage(1);
-    setFilter({ ...filter, onlyBaseSize: !filter.onlyBaseSize });
-  };
+  const onChangeApartName = (apartName: string) => onChangeFilter({ apartName });
 
-  const onToggleOnlySavedList = () => {
-    setPage(1);
-    setFilter({
-      ...filter,
-      onlySavedList: !filter.onlySavedList,
-    });
-  };
+  const onToggleOnlyBaseSize = () =>
+    onChangeFilter({ onlyBaseSize: !filter.onlyBaseSize });
 
-  useEffect(() => {
-    setPage(1);
-  }, [paramsStr]);
+  const onToggleOnlySavedList = () =>
+    onChangeFilter({ onlySavedList: !filter.onlySavedList });
+
+  useEffect(() => setPage(1), [paramsStr]);
 
   return {
     order,

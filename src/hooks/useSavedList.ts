@@ -35,8 +35,8 @@ const useSavedList = (): Return => {
     const targetApartList =
       savedList.find((item) => item.cityCode === cityCode)?.apartList ?? [];
 
-    const afterApartList = targetApartList.filter((item) =>
-      compareSavedApartItem(item, apartItem)
+    const afterApartList = targetApartList.filter(
+      (item) => !compareSavedApartItem(item, apartItem)
     );
 
     const afterSavedList = savedList
