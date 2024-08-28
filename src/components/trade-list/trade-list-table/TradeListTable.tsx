@@ -67,7 +67,12 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
         </div>
 
         <div className={styles.buttonList}>
-          <Input size="small" placeholder="아파트명" onChange={onChangeApartName} />
+          <Input
+            size="small"
+            placeholder="아파트명"
+            value={filter.apartName}
+            onChange={onChangeApartName}
+          />
           <Button
             size="small"
             color={filter.onlyBaseSize ? "primary" : "default"}

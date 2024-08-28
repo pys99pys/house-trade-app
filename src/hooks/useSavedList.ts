@@ -2,7 +2,8 @@ import { useState } from "react";
 
 import { STORAGE_KEY_SAVED_APART_LIST } from "@/constants/storageKeys";
 import { SavedApartItem, SavedItem, TradeItem } from "@/interfaces/TradeItem";
-import { getValue } from "@/utils/storage";
+import { getValue, setValue } from "@/utils/storage";
+import { compareSavedApartItem } from "@/utils/tradeItem";
 
 interface Return {
   savedList: SavedItem[];
@@ -20,30 +21,32 @@ const useSavedList = (): Return => {
     const targetApartList =
       savedList.find((item) => item.cityCode === cityCode)?.apartList ?? [];
     const afterApartList = [...targetApartList, apartItem];
+    const afterSavedList = hasSavedList
+      ? savedList.map((item) =>
+          item.cityCode === cityCode ? { cityCode, apartList: afterApartList } : item
+        )
+      : [...savedList, { cityCode, apartList: afterApartList }];
 
-    setSavedList(
-      hasSavedList
-        ? savedList.map((item) =>
-            item.cityCode === cityCode ? { cityCode, apartList: afterApartList } : item
-          )
-        : [...savedList, { cityCode, apartList: afterApartList }]
-    );
+    setSavedList(afterSavedList);
+    setValue(STORAGE_KEY_SAVED_APART_LIST, afterSavedList);
   };
 
   const removeItem = (cityCode: string, apartItem: SavedApartItem) => {
     const targetApartList =
       savedList.find((item) => item.cityCode === cityCode)?.apartList ?? [];
-    const afterApartList = targetApartList.filter(
-      (item) => item.address === apartItem.address && item.apartname === apartItem.address
+
+    const afterApartList = targetApartList.filter((item) =>
+      compareSavedApartItem(item, apartItem)
     );
 
-    setSavedList(
-      savedList
-        .map((item) =>
-          item.cityCode === cityCode ? { cityCode, apartList: afterApartList } : item
-        )
-        .filter((item) => item.apartList.length > 0)
-    );
+    const afterSavedList = savedList
+      .map((item) =>
+        item.cityCode === cityCode ? { cityCode, apartList: afterApartList } : item
+      )
+      .filter((item) => item.apartList.length > 0);
+
+    setSavedList(afterSavedList);
+    setValue(STORAGE_KEY_SAVED_APART_LIST, afterSavedList);
   };
 
   return { savedList, saveItem, removeItem };

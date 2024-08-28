@@ -15,3 +15,7 @@ export const getValue = <T = unknown>(key: string): T | null => {
     return null;
   }
 };
+
+export const removeValue = (key: string) => {
+  window.localStorage.removeItem(key);
+};

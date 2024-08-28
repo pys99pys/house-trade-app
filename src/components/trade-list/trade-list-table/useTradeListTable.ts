@@ -1,13 +1,12 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { STORAGE_KEY_ORDER, STORAGE_KEY_SAVED_APART_LIST } from "@/constants/storageKeys";
+import { STORAGE_KEY_ORDER } from "@/constants/storageKeys";
 import useSavedList from "@/hooks/useSavedList";
 import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
 import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
 import { parseToAverageAmountText } from "@/utils/formatter";
-import { debounce } from "@/utils/helper";
 import { getValue, setValue } from "@/utils/storage";
 import {
   compareSavedApartItem,
@@ -41,7 +40,9 @@ const PER_PAGE = 15;
 
 const useTradeListTable = ({ tradeItems }: Params): Return => {
   const params = useSearchParams();
+  const paramsStr = params.toString();
   const cityCodeParam = params.get("cityCode") ?? "";
+  const apartNameParam = params.get("apartName") ?? "";
 
   const { savedList, saveItem, removeItem } = useSavedList();
 
@@ -50,7 +51,7 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
     getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]
   );
   const [filter, setFilter] = useState<FilterType>({
-    apartName: "",
+    apartName: apartNameParam,
     onlyBaseSize: false,
     onlySavedList: false,
   });
@@ -81,11 +82,15 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
   const averageAmount = useMemo(() => parseToAverageAmountText(list), [list]);
   const count = useMemo(() => filteredItems.length, [filteredItems]);
 
-  const onChangeOrder = (column: OrderType[0]) =>
-    setOrder([
+  const onChangeOrder = (column: OrderType[0]) => {
+    const afterOrder: OrderType = [
       column,
       order[0] === column ? (order[1] === "asc" ? "desc" : "asc") : "asc",
-    ]);
+    ];
+
+    setValue(STORAGE_KEY_ORDER, afterOrder);
+    setOrder(afterOrder);
+  };
 
   const onClickList = (tradeItem: {
     address: TradeItem["address"];
@@ -104,29 +109,27 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
 
   const onChangePage = (page: number) => setPage(page);
 
-  const onChangeApartName = debounce((apartName: string) =>
-    setFilter({ ...filter, apartName })
-  );
+  const onChangeApartName = (apartName: string) => {
+    setPage(1);
+    setFilter({ ...filter, apartName });
+  };
 
-  const onToggleOnlyBaseSize = () =>
-    setFilter({
-      ...filter,
-      onlyBaseSize: !filter.onlyBaseSize,
-    });
+  const onToggleOnlyBaseSize = () => {
+    setPage(1);
+    setFilter({ ...filter, onlyBaseSize: !filter.onlyBaseSize });
+  };
 
-  const onToggleOnlySavedList = () =>
+  const onToggleOnlySavedList = () => {
+    setPage(1);
     setFilter({
       ...filter,
       onlySavedList: !filter.onlySavedList,
     });
+  };
 
-  useEffect(
-    () => setFilter({ apartName: "", onlyBaseSize: false, onlySavedList: false }),
-    [tradeItems]
-  );
-  useEffect(() => setPage(1), [filteredItems]);
-  useEffect(() => setValue(STORAGE_KEY_ORDER, order), [order]);
-  useEffect(() => setValue(STORAGE_KEY_SAVED_APART_LIST, savedList), [savedList]);
+  useEffect(() => {
+    setPage(1);
+  }, [paramsStr]);
 
   return {
     order,
@@ -136,6 +139,7 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
     count,
     list,
     savedApartList,
+
     onChangeOrder,
     onChangePage,
     onClickList,

@@ -1,13 +1,16 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 
-import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
+import { TRADE_LIST_PATH } from "@/constants/paths";
+import {
+  STORAGE_KEY_FAVORITE_LIST,
+  STORAGE_KEY_SEARCH_FORM,
+} from "@/constants/storageKeys";
 import { FavoriteItem, SearchFormType } from "@/interfaces/SearchForm";
 import {
   getCityCodeWithCode,
   getCityNameWithCode,
   getFirstCityCode,
-  getFirstCityName,
 } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
 import { getValue, setValue } from "@/utils/storage";
@@ -33,13 +36,16 @@ const useSearchForm = ({ onLoad }: Params): Return => {
   const { push } = useRouter();
   const searchParams = useSearchParams();
 
+  const defaultCityCode = searchParams.get("cityCode") ?? getFirstCityCode();
+  const defaultYearMonth = searchParams.get("yearMonth") ?? getBeforeYearMonth();
+
   const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(
     getValue(STORAGE_KEY_FAVORITE_LIST) ?? []
   );
   const [form, setForm] = useState<SearchFormType>({
-    cityName: getFirstCityName(),
-    cityCode: getFirstCityCode(),
-    yearMonth: getBeforeYearMonth(),
+    cityName: getCityNameWithCode(defaultCityCode),
+    cityCode: defaultCityCode,
+    yearMonth: defaultYearMonth,
   });
 
   const favoriteList = useMemo(
@@ -69,11 +75,17 @@ const useSearchForm = ({ onLoad }: Params): Return => {
     });
 
   const onRegistFavorite = () => {
-    setFavoriteCityCodes([...favoriteCityCodes, form.cityCode]);
+    const afterFavoriteCityCodes = [...favoriteCityCodes, form.cityCode];
+
+    setFavoriteCityCodes(afterFavoriteCityCodes);
+    setValue(STORAGE_KEY_FAVORITE_LIST, afterFavoriteCityCodes);
   };
 
   const onRemoveFavorite = (cityCode: string) => {
-    setFavoriteCityCodes(favoriteCityCodes.filter((item) => item !== cityCode));
+    const afterFavoriteCityCodes = favoriteCityCodes.filter((item) => item !== cityCode);
+
+    setFavoriteCityCodes(afterFavoriteCityCodes);
+    setValue(STORAGE_KEY_FAVORITE_LIST, afterFavoriteCityCodes);
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
@@ -85,7 +97,8 @@ const useSearchForm = ({ onLoad }: Params): Return => {
     }
 
     onLoad();
-    push(`/trade-list?cityCode=${cityCode}&yearMonth=${yearMonth}`);
+    setValue(STORAGE_KEY_SEARCH_FORM, { cityCode, yearMonth });
+    push(`${TRADE_LIST_PATH}?cityCode=${cityCode}&yearMonth=${yearMonth}`);
   };
 
   const onClickSearch = (e?: FormEvent) => {
@@ -100,11 +113,6 @@ const useSearchForm = ({ onLoad }: Params): Return => {
     setForm(afterForm);
     onSubmit({ yearMonth: form.yearMonth, cityCode });
   };
-
-  useEffect(
-    () => setValue(STORAGE_KEY_FAVORITE_LIST, favoriteCityCodes),
-    [favoriteCityCodes]
-  );
 
   return {
     form,

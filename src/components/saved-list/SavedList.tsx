@@ -8,7 +8,7 @@ import useSavedList from "./useSavedList";
 interface SavedListProps {}
 
 const SavedList: FC<SavedListProps> = () => {
-  const { list, removeItem } = useSavedList();
+  const { list, onClick, removeItem } = useSavedList();
 
   return (
     <div className={styles.savedList}>
@@ -19,9 +19,14 @@ const SavedList: FC<SavedListProps> = () => {
             <ul>
               {item.apartList.map((apartItem) => (
                 <li key={JSON.stringify(apartItem)}>
-                  <Button size="small">
+                  <Button size="small" onClick={() => onClick(item.cityCode, apartItem)}>
                     {apartItem.apartName}
-                    <span onClick={() => removeItem(item.cityCode, apartItem)}>
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeItem(item.cityCode, apartItem);
+                      }}
+                    >
                       <FaTimes />
                     </span>
                   </Button>
