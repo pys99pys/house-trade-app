@@ -9,11 +9,9 @@ import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
 import styles from "./SearchForm.module.css";
 import useSearchForm from "./useSearchForm";
 
-interface SearchFormProps {
-  onLoad: () => void;
-}
+interface SearchFormProps {}
 
-const SearchForm: FC<SearchFormProps> = ({ onLoad }) => {
+const SearchForm: FC<SearchFormProps> = () => {
   const {
     form,
     registered,
@@ -25,7 +23,7 @@ const SearchForm: FC<SearchFormProps> = ({ onLoad }) => {
     onRemoveFavorite,
     onClickFavorite,
     onClickSearch,
-  } = useSearchForm({ onLoad });
+  } = useSearchForm();
 
   return (
     <>
@@ -56,11 +54,7 @@ const SearchForm: FC<SearchFormProps> = ({ onLoad }) => {
       </form>
       <ul className={styles.favoriteItems}>
         {favoriteList.map((item) => (
-          <Button
-            key={item.cityCode}
-            size="xsmall"
-            onClick={() => onClickFavorite(item.cityCode)}
-          >
+          <Button key={item.cityCode} size="xsmall" onClick={() => onClickFavorite(item.cityCode)}>
             {item.label}
             <span
               role="button"

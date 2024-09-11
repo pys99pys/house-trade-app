@@ -1,28 +1,18 @@
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 
-import { TRADE_LIST_PATH } from "@/constants/paths";
-import {
-  STORAGE_KEY_FAVORITE_LIST,
-  STORAGE_KEY_SEARCH_FORM,
-} from "@/constants/storageKeys";
+import { STORAGE_KEY_FAVORITE_LIST, STORAGE_KEY_SEARCH_FORM } from "@/constants/storageKeys";
 import { FavoriteItem, SearchFormType } from "@/interfaces/SearchForm";
-import {
-  getCityCodeWithCode,
-  getCityNameWithCode,
-  getFirstCityCode,
-} from "@/utils/cityData";
+import { useSetSearchParamState } from "@/stores/searchParamStore";
+import { getCityCodeWithCode, getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
-import { getValue, setValue } from "@/utils/storage";
-
-interface Params {
-  onLoad: () => void;
-}
+import { getValue, setValue } from "@/utils/localStorage";
 
 interface Return {
   form: SearchFormType;
   favoriteList: FavoriteItem[];
   registered: boolean;
+
   onChangeCityName: (cityName: string) => void;
   onChangeCityCode: (cityCode: string) => void;
   onChangeYearMonth: (yearMonth: string) => void;
@@ -32,16 +22,14 @@ interface Return {
   onClickFavorite: (cityCode: string) => void;
 }
 
-const useSearchForm = ({ onLoad }: Params): Return => {
-  const { push } = useRouter();
+const useSearchForm = (): Return => {
   const searchParams = useSearchParams();
+  const setSearchParamState = useSetSearchParamState();
 
-  const defaultCityCode = searchParams.get("cityCode") ?? getFirstCityCode();
-  const defaultYearMonth = searchParams.get("yearMonth") ?? getBeforeYearMonth();
+  const defaultCityCode = searchParams?.get("cityCode") ?? getFirstCityCode();
+  const defaultYearMonth = searchParams?.get("yearMonth") ?? getBeforeYearMonth();
 
-  const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(
-    getValue(STORAGE_KEY_FAVORITE_LIST) ?? []
-  );
+  const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(getValue(STORAGE_KEY_FAVORITE_LIST) ?? []);
   const [form, setForm] = useState<SearchFormType>({
     cityName: getCityNameWithCode(defaultCityCode),
     cityCode: defaultCityCode,
@@ -89,16 +77,8 @@ const useSearchForm = ({ onLoad }: Params): Return => {
   };
 
   const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
-    if (
-      searchParams.get("yearMonth") === yearMonth &&
-      searchParams.get("cityCode") === cityCode
-    ) {
-      return;
-    }
-
-    onLoad();
     setValue(STORAGE_KEY_SEARCH_FORM, { cityCode, yearMonth });
-    push(`${TRADE_LIST_PATH}?cityCode=${cityCode}&yearMonth=${yearMonth}`);
+    setSearchParamState({ cityCode, yearMonth });
   };
 
   const onClickSearch = (e?: FormEvent) => {
@@ -118,6 +98,7 @@ const useSearchForm = ({ onLoad }: Params): Return => {
     form,
     favoriteList,
     registered,
+
     onChangeCityName,
     onChangeCityCode,
     onChangeYearMonth,

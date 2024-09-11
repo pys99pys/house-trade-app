@@ -6,20 +6,13 @@ import useSavedList from "@/hooks/useSavedList";
 import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
 import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
+import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
 import { parseToAverageAmountText } from "@/utils/formatter";
-import { getValue, setValue } from "@/utils/storage";
-import {
-  compareSavedApartItem,
-  filterItems,
-  sliceItems,
-  sortItems,
-} from "@/utils/tradeItem";
-
-interface Params {
-  tradeItems: TradeItem[];
-}
+import { getValue, setValue } from "@/utils/localStorage";
+import { compareSavedApartItem, filterItems, sliceItems, sortItems } from "@/utils/tradeItem";
 
 interface Return {
+  isLoading: boolean;
   order: OrderType;
   filter: FilterType;
   page: number;
@@ -38,18 +31,19 @@ interface Return {
 
 const PER_PAGE = 15;
 
-const useTradeListTable = ({ tradeItems }: Params): Return => {
+const useTradeListTable = (): Return => {
+  const { isLoading, data } = useFetchTradeListQuery();
+
   const params = useSearchParams();
-  const paramsStr = params.toString();
-  const cityCodeParam = params.get("cityCode") ?? "";
-  const apartNameParam = params.get("apartName") ?? "";
+  const cityCodeParam = params?.get("cityCode") ?? "";
+  const apartNameParam = params?.get("apartName") ?? "";
+
+  const tradeItems = useMemo(() => data?.list ?? [], [data]);
 
   const { savedList, saveItem, removeItem } = useSavedList();
 
   const [page, setPage] = useState<number>(1);
-  const [order, setOrder] = useState<OrderType>(
-    getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]
-  );
+  const [order, setOrder] = useState<OrderType>(getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]);
   const [filter, setFilter] = useState<FilterType>({
     apartName: apartNameParam,
     onlyBaseSize: false,
@@ -83,22 +77,14 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
   const count = useMemo(() => filteredItems.length, [filteredItems]);
 
   const onChangeOrder = (column: OrderType[0]) => {
-    const afterOrder: OrderType = [
-      column,
-      order[0] === column ? (order[1] === "asc" ? "desc" : "asc") : "asc",
-    ];
+    const afterOrder: OrderType = [column, order[0] === column ? (order[1] === "asc" ? "desc" : "asc") : "asc"];
 
     setValue(STORAGE_KEY_ORDER, afterOrder);
     setOrder(afterOrder);
   };
 
-  const onClickList = (tradeItem: {
-    address: TradeItem["address"];
-    apartName: TradeItem["apartName"];
-  }) => {
-    const hasSavedApartList = savedApartList.some((item) =>
-      compareSavedApartItem(item, tradeItem)
-    );
+  const onClickList = (tradeItem: { address: TradeItem["address"]; apartName: TradeItem["apartName"] }) => {
+    const hasSavedApartList = savedApartList.some((item) => compareSavedApartItem(item, tradeItem));
 
     if (hasSavedApartList) {
       removeItem(cityCodeParam, tradeItem);
@@ -116,15 +102,14 @@ const useTradeListTable = ({ tradeItems }: Params): Return => {
 
   const onChangeApartName = (apartName: string) => onChangeFilter({ apartName });
 
-  const onToggleOnlyBaseSize = () =>
-    onChangeFilter({ onlyBaseSize: !filter.onlyBaseSize });
+  const onToggleOnlyBaseSize = () => onChangeFilter({ onlyBaseSize: !filter.onlyBaseSize });
 
-  const onToggleOnlySavedList = () =>
-    onChangeFilter({ onlySavedList: !filter.onlySavedList });
+  const onToggleOnlySavedList = () => onChangeFilter({ onlySavedList: !filter.onlySavedList });
 
-  useEffect(() => setPage(1), [paramsStr]);
+  useEffect(() => setPage(1), [data]);
 
   return {
+    isLoading,
     order,
     filter,
     page,

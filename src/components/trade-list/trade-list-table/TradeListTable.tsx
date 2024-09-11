@@ -5,26 +5,19 @@ import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
 import Pagination from "@/components/common/pagination/Pagination";
 import { TradeItem } from "@/interfaces/TradeItem";
-import {
-  parseToAmount,
-  parseToAmountText,
-  parseToAreaSize,
-  parseToFlatSize,
-} from "@/utils/formatter";
+import { parseToAmount, parseToAmountText, parseToAreaSize, parseToFlatSize } from "@/utils/formatter";
 import { compareSavedApartItem } from "@/utils/tradeItem";
 
 import styles from "./TradeListTable.module.css";
 import useTradeListTable from "./useTradeListTable";
 
-interface TradeListTableProps {
-  loading: boolean;
-  tradeItems: TradeItem[];
-}
+interface TradeListTableProps {}
 
 const PER_PAGE = 15;
 
-const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
+const TradeListTable: FC<TradeListTableProps> = () => {
   const {
+    isLoading,
     order,
     filter,
     page,
@@ -32,13 +25,14 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
     count,
     list,
     savedApartList,
+
     onChangeOrder,
     onChangePage,
     onClickList,
     onChangeApartName,
     onToggleOnlyBaseSize,
     onToggleOnlySavedList,
-  } = useTradeListTable({ tradeItems });
+  } = useTradeListTable();
 
   const createHeaderCell = (key: keyof TradeItem, label: string) => (
     <div className={styles.headerCell}>
@@ -49,9 +43,7 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
     </div>
   );
 
-  const createBodyCell = (label: ReactNode) => (
-    <div className={styles.rowCell}>{label}</div>
-  );
+  const createBodyCell = (label: ReactNode) => <div className={styles.rowCell}>{label}</div>;
 
   return (
     <>
@@ -67,24 +59,11 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
         </div>
 
         <div className={styles.buttonList}>
-          <Input
-            size="small"
-            placeholder="아파트명"
-            value={filter.apartName}
-            onChange={onChangeApartName}
-          />
-          <Button
-            size="small"
-            color={filter.onlyBaseSize ? "primary" : "default"}
-            onClick={onToggleOnlyBaseSize}
-          >
+          <Input size="small" placeholder="아파트명" value={filter.apartName} onChange={onChangeApartName} />
+          <Button size="small" color={filter.onlyBaseSize ? "primary" : "default"} onClick={onToggleOnlyBaseSize}>
             국민평수
           </Button>
-          <Button
-            size="small"
-            color={filter.onlySavedList ? "primary" : "default"}
-            onClick={onToggleOnlySavedList}
-          >
+          <Button size="small" color={filter.onlySavedList ? "primary" : "default"} onClick={onToggleOnlySavedList}>
             저장 목록
           </Button>
         </div>
@@ -101,13 +80,11 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
         </div>
 
         <div className={styles.body}>
-          {loading && <div className={styles.empty}>조회중...</div>}
+          {isLoading && <div className={styles.empty}>조회중...</div>}
 
-          {!loading && list.length === 0 && (
-            <div className={styles.empty}>데이터 없음</div>
-          )}
+          {!isLoading && list.length === 0 && <div className={styles.empty}>데이터 없음</div>}
 
-          {!loading && (
+          {!isLoading && (
             <>
               {list.map((item, i) => (
                 <div
@@ -129,10 +106,8 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
                           const subTexts: string[] = [];
 
                           if (item.floor !== null) subTexts.push(`${item.floor}층`);
-                          if (item.buildedYear !== null)
-                            subTexts.push(`${item.buildedYear}년식`);
-                          if (item.householdsNumber !== null)
-                            subTexts.push(`${item.householdsNumber}세대`);
+                          if (item.buildedYear !== null) subTexts.push(`${item.buildedYear}년식`);
+                          if (item.householdsNumber !== null) subTexts.push(`${item.householdsNumber}세대`);
 
                           return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
                         })()}
@@ -142,8 +117,7 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
                   {createBodyCell(
                     item.size && (
                       <>
-                        {parseToFlatSize(item.size)}평
-                        <small>({parseToAreaSize(item.size)}㎡)</small>
+                        {parseToFlatSize(item.size)}평<small>({parseToAreaSize(item.size)}㎡)</small>
                       </>
                     )
                   )}
@@ -152,25 +126,16 @@ const TradeListTable: FC<TradeListTableProps> = ({ loading, tradeItems }) => {
                       {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
                     </span>
                   )}
-                  {createBodyCell(
-                    item.maxTradeAmount > 0 ? (
-                      <>{parseToAmount(item.maxTradeAmount)}억원</>
-                    ) : null
-                  )}
+                  {createBodyCell(item.maxTradeAmount > 0 ? <>{parseToAmount(item.maxTradeAmount)}억원</> : null)}
                 </div>
               ))}
             </>
           )}
         </div>
 
-        {!loading && count > PER_PAGE && (
+        {!isLoading && count > PER_PAGE && (
           <div className={styles.pagination}>
-            <Pagination
-              per={PER_PAGE}
-              total={count}
-              current={page}
-              onChange={onChangePage}
-            />
+            <Pagination per={PER_PAGE} total={count} current={page} onChange={onChangePage} />
           </div>
         )}
       </div>

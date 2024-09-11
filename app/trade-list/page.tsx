@@ -1,25 +1,24 @@
-import { TradeItem } from "@/interfaces/TradeItem";
-import { getTradeList } from "@/utils/crawler";
+"use client";
 
-import Client from "./client";
+import Layout from "@/components/common/layout/Layout";
+import SearchForm from "@/components/trade-list/search-form/SearchForm";
+import TradeListTable from "@/components/trade-list/trade-list-table/TradeListTable";
 
-interface Params {
-  searchParams: { cityCode?: string; yearMonth?: string };
-}
+import styles from "./page.module.css";
 
-const Page = async ({ searchParams }: Params) => {
-  let tradeItems: TradeItem[] = [];
-
-  if (searchParams.cityCode && searchParams.yearMonth) {
-    const result = await getTradeList({
-      area: searchParams.cityCode,
-      createDt: searchParams.yearMonth,
-    });
-
-    tradeItems = result.list;
-  }
-
-  return <Client updatedAt={+new Date()} tradeItems={tradeItems} />;
+const Page = () => {
+  return (
+    <Layout>
+      <div className={styles.tradeList}>
+        <div>
+          <SearchForm />
+        </div>
+        <div>
+          <TradeListTable />
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
 export default Page;

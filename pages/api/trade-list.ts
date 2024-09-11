@@ -1,16 +1,15 @@
 import cheerio, { Cheerio } from "cheerio";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 import { TradeItem } from "@/interfaces/TradeItem";
 
-const calcIsTradeListTable = (table: Cheerio<any>): boolean =>
-  !!table.find(`td:contains("단지명")`).text();
+const calculateIsTradeListTable = (table: Cheerio<any>): boolean => !!table.find(`td:contains("단지명")`).text();
 
-const splitCellText = (text: string): string[] =>
-  text.replace(/^\s+|\s+$/gm, "").split("\n");
+const splitCellText = (text: string): string[] => text.replace(/^\s+|\s+$/gm, "").split("\n");
 
-const parseNumber = (str: string): number => Number(str.replace(/[^0-9]/g, ""));
+const formatToNumber = (str: string): number => Number(str.replace(/[^0-9]/g, ""));
 
-const parseAmount = (amountText: string): number => {
+const formatToAmount = (amountText: string): number => {
   let amount: number = 0;
   let restText: string = amountText;
 
@@ -31,7 +30,7 @@ const parseAmount = (amountText: string): number => {
   return amount;
 };
 
-const parseFirstCell = (
+const parseFirstCellData = (
   cell: Cheerio<any>
 ): {
   apartName: string;
@@ -47,15 +46,13 @@ const parseFirstCell = (
 
   return {
     apartName: texts[0],
-    buildedYear: buildedYearText ? parseNumber(buildedYearText.split(" ")[0]) : null,
-    householdsNumber: householdsNumberText
-      ? parseNumber(householdsNumberText.split(" / ")[0])
-      : null,
+    buildedYear: buildedYearText ? formatToNumber(buildedYearText.split(" ")[0]) : null,
+    householdsNumber: householdsNumberText ? formatToNumber(householdsNumberText.split(" / ")[0]) : null,
     address: addressText ?? "",
   };
 };
 
-const parseSecondCell = (
+const parseSecondCellData = (
   cell: Cheerio<any>
 ): {
   tradeDate: string;
@@ -70,11 +67,11 @@ const parseSecondCell = (
   return {
     tradeDate: "20" + texts[0].split(" ")[0].replaceAll(".", "-"),
     size: sizeText ? Number(sizeText.replace("㎡", "")) : null,
-    floor: floorText ? parseNumber(floorText.split(" ")[1]) : null,
+    floor: floorText ? formatToNumber(floorText.split(" ")[1]) : null,
   };
 };
 
-const parseThirdCell = (
+const parseThirdCellData = (
   cell: Cheerio<any>
 ): {
   isNewRecord: boolean;
@@ -89,15 +86,15 @@ const parseThirdCell = (
 
   return {
     isNewRecord,
-    tradeAmount: parseAmount(tradeAmountText.split(" (신)")[0]),
-    maxTradeAmount: parseAmount(maxTradeAmountText.split(" ")[0]),
+    tradeAmount: formatToAmount(tradeAmountText.split(" (신)")[0]),
+    maxTradeAmount: formatToAmount(maxTradeAmountText.split(" ")[0]),
   };
 };
 
-const parseRow = (row: Cheerio<any>): TradeItem => {
-  const firstCellItems = parseFirstCell(row.find("td:nth-child(1)"));
-  const secondCellitems = parseSecondCell(row.find("td:nth-child(2)"));
-  const thirdCellitems = parseThirdCell(row.find("td:nth-child(3)"));
+const parseRowData = (row: Cheerio<any>): TradeItem => {
+  const firstCellItems = parseFirstCellData(row.find("td:nth-child(1)"));
+  const secondCellitems = parseSecondCellData(row.find("td:nth-child(2)"));
+  const thirdCellitems = parseThirdCellData(row.find("td:nth-child(3)"));
 
   return {
     ...firstCellItems,
@@ -106,14 +103,14 @@ const parseRow = (row: Cheerio<any>): TradeItem => {
   };
 };
 
-const parseTradeList = (html: string): TradeItem[] => {
+const parseTradeListData = (html: string): TradeItem[] => {
   const $ = cheerio.load(html);
   const tables = $("table");
 
   const list: TradeItem[] = [];
 
   tables.each((_, table) => {
-    const isTradeListTable = calcIsTradeListTable($(table));
+    const isTradeListTable = calculateIsTradeListTable($(table));
 
     if (!isTradeListTable) {
       return;
@@ -122,7 +119,7 @@ const parseTradeList = (html: string): TradeItem[] => {
     $(table)
       .find("tr:not(:first-child)")
       .each((_, row) => {
-        list.push(parseRow($(row)));
+        list.push(parseRowData($(row)));
       });
   });
 
@@ -138,14 +135,12 @@ const fetchTradeList = async ({
   createDt: string;
   page: number;
 }): Promise<string> => {
-  const response = await fetch(
-    `https://apt2.me/apt/AptMonth.jsp?area=${area}&createDt=${createDt}&pages=${page}`
-  );
+  const response = await fetch(`https://apt2.me/apt/AptMonth.jsp?area=${area}&createDt=${createDt}&pages=${page}`);
 
   return await response.text();
 };
 
-async function* getTradeListPerPage({
+async function* createTradeListPerPage({
   area,
   createDt,
   page,
@@ -154,34 +149,36 @@ async function* getTradeListPerPage({
   createDt: string;
   page: number;
 }): AsyncGenerator<TradeItem[], void, unknown> {
-  const html = await fetchTradeList({
-    area,
-    createDt,
-    page,
-  });
-
-  const parsedList = parseTradeList(html);
+  const html = await fetchTradeList({ area, createDt, page });
+  const parsedList = parseTradeListData(html);
 
   if (parsedList.length > 0) {
     yield parsedList;
-    yield* getTradeListPerPage({ area, createDt, page: page + 1 });
+    yield* createTradeListPerPage({ area, createDt, page: page + 1 });
   }
 }
 
-export const getTradeList = async ({
-  area,
-  createDt,
-}: {
-  area: string;
-  createDt: string;
-}): Promise<{ count: number; list: TradeItem[] }> => {
+const handler = async (
+  req: NextApiRequest,
+  res: NextApiResponse<{ count: number; list: TradeItem[] } | { message: string }>
+) => {
+  if (typeof req.query.cityCode !== "string" || typeof req.query.yearMonth !== "string") {
+    return res.status(500).json({ message: "필수 파라미터가 누락되었습니다." });
+  }
+
   let count: number = 0;
   let list: TradeItem[] = [];
 
-  for await (const result of getTradeListPerPage({ area, createDt, page: 1 })) {
+  for await (const result of createTradeListPerPage({
+    area: req.query.cityCode,
+    createDt: req.query.yearMonth,
+    page: 1,
+  })) {
     count += result.length;
     list = list.concat(result);
   }
 
-  return { count, list };
+  res.status(200).json({ count, list });
 };
+
+export default handler;

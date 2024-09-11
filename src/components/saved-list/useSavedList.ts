@@ -7,7 +7,7 @@ import useSavedApartList from "@/hooks/useSavedList";
 import { SavedApartItem } from "@/interfaces/TradeItem";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
-import { getValue } from "@/utils/storage";
+import { getValue } from "@/utils/localStorage";
 
 interface Return {
   list: {
