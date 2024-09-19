@@ -8,6 +8,7 @@ import { SavedApartItem } from "@/interfaces/TradeItem";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
 import { getValue } from "@/utils/localStorage";
+import { encodeSearchParam } from "@/utils/searchParam";
 
 interface Return {
   list: {
@@ -39,7 +40,11 @@ const useSavedList = (): Return => {
     const savedSearchForm = getValue<{ yearMonth: string }>(STORAGE_KEY_SEARCH_FORM);
 
     push(
-      `${TRADE_LIST_PATH}?cityCode=${cityCode}&yearMonth=${savedSearchForm?.yearMonth ?? getBeforeYearMonth()}&apartName=${encodeURIComponent(savedItem.apartName)}`
+      `${TRADE_LIST_PATH}?params=${encodeSearchParam({
+        cityCode,
+        apartName: savedItem.apartName,
+        yearMonth: savedSearchForm?.yearMonth ?? getBeforeYearMonth(),
+      })}`
     );
   };
 

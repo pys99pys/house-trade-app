@@ -1,5 +1,5 @@
-import { useSearchParams } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import { STORAGE_KEY_FAVORITE_LIST, STORAGE_KEY_SEARCH_FORM } from "@/constants/storageKeys";
 import { FavoriteItem, SearchFormType } from "@/interfaces/SearchForm";
@@ -7,6 +7,7 @@ import { useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityCodeWithCode, getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
 import { getValue, setValue } from "@/utils/localStorage";
+import { decodeSearchParam } from "@/utils/searchParam";
 
 interface Return {
   form: SearchFormType;
@@ -22,12 +23,12 @@ interface Return {
   onClickFavorite: (cityCode: string) => void;
 }
 
-const useSearchForm = (): Return => {
-  const searchParams = useSearchParams();
-  const setSearchParamState = useSetSearchParamState();
+const defaultCityCode = getFirstCityCode();
+const defaultYearMonth = getBeforeYearMonth();
 
-  const defaultCityCode = searchParams?.get("cityCode") ?? getFirstCityCode();
-  const defaultYearMonth = searchParams?.get("yearMonth") ?? getBeforeYearMonth();
+const useSearchForm = (): Return => {
+  const setSearchParamState = useSetSearchParamState();
+  const params = useSearchParams();
 
   const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(getValue(STORAGE_KEY_FAVORITE_LIST) ?? []);
   const [form, setForm] = useState<SearchFormType>({
@@ -76,10 +77,13 @@ const useSearchForm = (): Return => {
     setValue(STORAGE_KEY_FAVORITE_LIST, afterFavoriteCityCodes);
   };
 
-  const onSubmit = ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
-    setValue(STORAGE_KEY_SEARCH_FORM, { cityCode, yearMonth });
-    setSearchParamState({ cityCode, yearMonth });
-  };
+  const onSubmit = useCallback(
+    ({ yearMonth, cityCode }: { yearMonth: string; cityCode: string }) => {
+      setValue(STORAGE_KEY_SEARCH_FORM, { cityCode, yearMonth });
+      setSearchParamState({ cityCode, yearMonth });
+    },
+    [setSearchParamState]
+  );
 
   const onClickSearch = (e?: FormEvent) => {
     e?.preventDefault();
@@ -93,6 +97,21 @@ const useSearchForm = (): Return => {
     setForm(afterForm);
     onSubmit({ yearMonth: form.yearMonth, cityCode });
   };
+
+  useEffect(() => {
+    const queryParams = params?.get("params");
+    const decodedParams = queryParams && decodeSearchParam(queryParams);
+
+    if (decodedParams) {
+      setForm({
+        cityName: getCityNameWithCode(decodedParams.cityCode),
+        cityCode: decodedParams.cityCode,
+        yearMonth: decodedParams?.yearMonth,
+      });
+
+      onSubmit({ cityCode: decodedParams.cityCode, yearMonth: decodedParams?.yearMonth });
+    }
+  }, [params, onSubmit]);
 
   return {
     form,
