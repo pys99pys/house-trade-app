@@ -1,6 +1,8 @@
 "use client";
 
 import Layout from "@/components/common/layout/Layout";
+import FavoriteList from "@/components/trade-list/favorite-list/FavoriteList";
+import FilterForm from "@/components/trade-list/filter-form/FilterForm";
 import SearchForm from "@/components/trade-list/search-form/SearchForm";
 import TradeListTable from "@/components/trade-list/trade-list-table/TradeListTable";
 
@@ -10,12 +12,10 @@ const Page = () => {
   return (
     <Layout>
       <div className={styles.tradeList}>
-        <div>
-          <SearchForm />
-        </div>
-        <div>
-          <TradeListTable />
-        </div>
+        <SearchForm />
+        <FavoriteList />
+        <FilterForm />
+        <TradeListTable />
       </div>
     </Layout>
   );

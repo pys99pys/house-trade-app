@@ -1,29 +1,30 @@
-import { FC } from "react";
+import { FC, useMemo, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
 import Select from "@/components/common/select/Select";
-import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
+import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
+import { SearchFormType } from "@/interfaces/SearchForm";
+import { getCityCodeItems, getCityNameItems, getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
+import { getBeforeYearMonth } from "@/utils/date";
 
 import styles from "./SearchForm.module.css";
 import useSearchForm from "./useSearchForm";
 
 interface SearchFormProps {}
 
+const defaultCityCode = getFirstCityCode();
+const defaultYearMonth = getBeforeYearMonth();
+
 const SearchForm: FC<SearchFormProps> = () => {
-  const {
-    form,
-    registered,
-    favoriteList,
-    onChangeCityName,
-    onChangeCityCode,
-    onChangeYearMonth,
-    onRegistFavorite,
-    onRemoveFavorite,
-    onClickFavorite,
-    onClickSearch,
-  } = useSearchForm();
+  const { onChangeCityName, onChangeCityCode, onChangeYearMonth, onRegistFavorite, onClickSearch } = useSearchForm();
+
+  const [form, setForm] = useState<SearchFormType>({
+    cityName: getCityNameWithCode(defaultCityCode),
+    cityCode: defaultCityCode,
+    yearMonth: defaultYearMonth,
+  });
 
   return (
     <>
@@ -42,33 +43,16 @@ const SearchForm: FC<SearchFormProps> = () => {
             </option>
           ))}
         </Select>
-        <Input value={form.yearMonth} onChange={onChangeYearMonth} />
+        <Input id={ELEMENT_ID_YEAR_MONTH_INPUT} value={form.yearMonth} onChange={onChangeYearMonth} />
         <Button type="submit" color="primary">
           검색
         </Button>
-        {!registered && (
+        {
           <Button color="yellow" onClick={onRegistFavorite}>
             즐겨찾기
           </Button>
-        )}
+        }
       </form>
-      <ul className={styles.favoriteItems}>
-        {favoriteList.map((item) => (
-          <Button key={item.cityCode} size="xsmall" onClick={() => onClickFavorite(item.cityCode)}>
-            {item.label}
-            <span
-              role="button"
-              className={styles.removeIcon}
-              onClick={(e) => {
-                e.stopPropagation();
-                onRemoveFavorite(item.cityCode);
-              }}
-            >
-              <FaTimes />
-            </span>
-          </Button>
-        ))}
-      </ul>
     </>
   );
 };

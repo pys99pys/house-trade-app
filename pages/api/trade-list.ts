@@ -7,7 +7,7 @@ const calculateIsTradeListTable = (table: Cheerio<any>): boolean => !!table.find
 
 const splitCellText = (text: string): string[] => text.replace(/^\s+|\s+$/gm, "").split("\n");
 
-const formatToNumber = (str: string): number => Number(str.replace(/[^0-9]/g, ""));
+const formatToNumber = (str: string | undefined): number => (str ? Number(str.replace(/[^0-9]/g, "")) : 0);
 
 const formatToAmount = (amountText: string): number => {
   let amount: number = 0;
@@ -66,8 +66,8 @@ const parseSecondCellData = (
 
   return {
     tradeDate: "20" + texts[0].split(" ")[0].replaceAll(".", "-"),
-    size: sizeText ? Number(sizeText.replace("㎡", "")) : null,
-    floor: floorText ? formatToNumber(floorText.split(" ")[1]) : null,
+    size: sizeText ? Number(sizeText.split("㎡")[0]) : null,
+    floor: floorText ? formatToNumber(floorText.replaceAll("층", "")) : null,
   };
 };
 

@@ -1,0 +1,17 @@
+.filterForm {
+  padding-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.filterForm .summary strong {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.filterForm .buttons {
+  display: flex;
+  gap: 0.5rem;
+}

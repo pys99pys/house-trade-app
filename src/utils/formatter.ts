@@ -1,7 +1,13 @@
+import { TradeItem } from "@/interfaces/TradeItem";
+
 export const parseToNumberFormat = (number: number): string =>
   number.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 
-export const parseToFlatSize = (areaSize: number): number => {
+export const parseToFlatSize = (areaSize: number | null): number => {
+  if (!areaSize) {
+    return 0;
+  }
+
   const area = areaSize * 0.3025;
   const addtionalSize = areaSize < 84 ? 8 : 9;
 
@@ -15,10 +21,11 @@ export const parseToAreaSize = (originSize: number): number => {
 export const parseToAmount = (amount: number): number => amount / 100000000;
 
 export const parseToAverageAmountText = (tradeList: TradeItem[]): number => {
-  const averageAmount = tradeList.reduce(
-    (acc, item) => acc + Math.floor(item.tradeAmount / parseToFlatSize(item.size)),
-    0
-  );
+  const averageAmount = tradeList.reduce((acc, item) => {
+    const platSize = parseToFlatSize(item.size);
+
+    return acc + (platSize === 0 ? 0 : Math.floor(item.tradeAmount / platSize));
+  }, 0);
 
   return averageAmount / tradeList.length;
 };

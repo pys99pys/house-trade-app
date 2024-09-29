@@ -1,0 +1,23 @@
+.favoriteList {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.favoriteList button {
+  display: flex;
+  align-items: center;
+}
+
+.favoriteList button .removeIcon {
+  margin-left: 0.25rem;
+  font-size: 1rem;
+  color: var(--color-font-gray);
+  transform: translateY(1px);
+  transition: color 300ms ease;
+}
+
+.favoriteList button .removeIcon:hover {
+  color: var(--color-red);
+}
