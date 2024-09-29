@@ -1,16 +1,17 @@
-import { FC, useMemo, useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { FC, FormEvent, useState } from "react";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
 import Select from "@/components/common/select/Select";
 import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
+import { STORAGE_KEY_SEARCH_FORM } from "@/constants/storageKeys";
 import { SearchFormType } from "@/interfaces/SearchForm";
+import { useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityCodeItems, getCityNameItems, getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
+import { setValue } from "@/utils/localStorage";
 
 import styles from "./SearchForm.module.css";
-import useSearchForm from "./useSearchForm";
 
 interface SearchFormProps {}
 
@@ -18,7 +19,7 @@ const defaultCityCode = getFirstCityCode();
 const defaultYearMonth = getBeforeYearMonth();
 
 const SearchForm: FC<SearchFormProps> = () => {
-  const { onChangeCityName, onChangeCityCode, onChangeYearMonth, onRegistFavorite, onClickSearch } = useSearchForm();
+  const setSearchParam = useSetSearchParamState();
 
   const [form, setForm] = useState<SearchFormType>({
     cityName: getCityNameWithCode(defaultCityCode),
@@ -26,9 +27,28 @@ const SearchForm: FC<SearchFormProps> = () => {
     yearMonth: defaultYearMonth,
   });
 
+  const onChangeCityName = (cityName: string) => setForm({ ...form, cityName });
+
+  const onChangeCityCode = (cityCode: string) => setForm({ ...form, cityCode });
+
+  const onChangeYearMonth = (yearMonth: string) =>
+    setForm({
+      ...form,
+      yearMonth: yearMonth.slice(0, 6).replace(/[^0-9]/g, ""),
+    });
+
+  const onSubmit = (e?: FormEvent) => {
+    e?.preventDefault();
+
+    const afterForm = { cityCode: form.cityCode, yearMonth: form.yearMonth };
+
+    setValue(STORAGE_KEY_SEARCH_FORM, afterForm);
+    setSearchParam(afterForm);
+  };
+
   return (
     <>
-      <form className={styles.form} onSubmit={onClickSearch}>
+      <form className={styles.form} onSubmit={onSubmit}>
         <Select value={form.cityName} onChange={onChangeCityName}>
           {getCityNameItems().map((cityName) => (
             <option key={cityName} value={cityName}>
@@ -48,7 +68,7 @@ const SearchForm: FC<SearchFormProps> = () => {
           검색
         </Button>
         {
-          <Button color="yellow" onClick={onRegistFavorite}>
+          <Button color="yellow" onClick={() => alert("구현중")}>
             즐겨찾기
           </Button>
         }
