@@ -1,5 +1,12 @@
 .tradeList {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+}
+
+.favoriteList {
+  margin-top: 0.75rem;
+}
+
+.filterForm {
+  margin-top: 2rem;
 }

@@ -13,9 +13,15 @@ const Page = () => {
     <Layout>
       <div className={styles.tradeList}>
         <SearchForm />
-        <FavoriteList />
-        <FilterForm />
-        <TradeListTable />
+        <div className={styles.favoriteList}>
+          <FavoriteList />
+        </div>
+        <div className={styles.filterForm}>
+          <FilterForm />
+        </div>
+        <div className={styles.tradeList}>
+          <TradeListTable />
+        </div>
       </div>
     </Layout>
   );

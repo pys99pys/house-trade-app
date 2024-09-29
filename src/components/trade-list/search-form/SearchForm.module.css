@@ -2,27 +2,3 @@
   display: flex;
   column-gap: 0.5rem;
 }
-
-.favoriteItems {
-  margin-top: 0.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.favoriteItems button {
-  display: flex;
-  align-items: center;
-}
-
-.favoriteItems button .removeIcon {
-  margin-left: 0.25rem;
-  font-size: 1rem;
-  color: var(--color-font-gray);
-  transform: translateY(1px);
-  transition: color 300ms ease;
-}
-
-.favoriteItems button .removeIcon:hover {
-  color: var(--color-red);
-}
