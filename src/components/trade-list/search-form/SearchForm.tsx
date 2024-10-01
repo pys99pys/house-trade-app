@@ -1,4 +1,4 @@
-import { FC, FormEvent, useMemo, useState } from "react";
+import { FC, FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
@@ -7,7 +7,7 @@ import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
 import { STORAGE_KEY_FAVORITE_LIST, STORAGE_KEY_SEARCH_FORM } from "@/constants/storageKeys";
 import { SearchFormType } from "@/interfaces/SearchForm";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
-import { useSetSearchParamState } from "@/stores/searchParamStore";
+import { useSearchParamValue, useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityCodeItems, getCityNameItems, getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
 import { setValue } from "@/utils/localStorage";
@@ -21,6 +21,7 @@ const defaultYearMonth = getBeforeYearMonth();
 
 const SearchForm: FC<SearchFormProps> = () => {
   const favoriteCityCodes = useFavoriteCityCodeListValue();
+  const searchParam = useSearchParamValue();
 
   const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
   const setSearchParam = useSetSearchParamState();
@@ -30,6 +31,8 @@ const SearchForm: FC<SearchFormProps> = () => {
     cityCode: defaultCityCode,
     yearMonth: defaultYearMonth,
   });
+
+  const copiedForm = useRef<SearchFormType>(form);
 
   const registeredCityCode = useMemo(
     () => favoriteCityCodes.some((cityCode) => cityCode === form.cityCode),
@@ -61,6 +64,20 @@ const SearchForm: FC<SearchFormProps> = () => {
     setValue(STORAGE_KEY_SEARCH_FORM, afterForm);
     setSearchParam(afterForm);
   };
+
+  useEffect(() => {
+    if (searchParam.cityCode) {
+      setForm({
+        ...copiedForm.current,
+        cityName: getCityNameWithCode(searchParam.cityCode),
+        cityCode: searchParam.cityCode,
+      });
+    }
+  }, [searchParam]);
+
+  useEffect(() => {
+    copiedForm.current = form;
+  }, [form]);
 
   return (
     <>

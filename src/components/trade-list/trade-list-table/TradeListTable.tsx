@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { FC, ReactNode, useMemo, useState } from "react";
+import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 
 import Pagination from "@/components/common/pagination/Pagination";
 import { STORAGE_KEY_ORDER } from "@/constants/storageKeys";
@@ -8,11 +8,13 @@ import useTradeList from "@/hooks/useTradeList";
 import { OrderType } from "@/interfaces/Order";
 import { TradeItem } from "@/interfaces/TradeItem";
 import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
+import { useFilterFormValue } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
 import { parseToAmount, parseToAreaSize, parseToFlatSize } from "@/utils/formatter";
 import { getValue, setValue } from "@/utils/localStorage";
 import { compareSavedApartItem, sliceItems, sortItems } from "@/utils/tradeItem";
 
+import FilterForm from "../filter-form/FilterForm";
 import styles from "./TradeListTable.module.css";
 
 interface TradeListTableProps {}
@@ -21,6 +23,7 @@ const PER_PAGE = 15;
 
 const TradeListTable: FC<TradeListTableProps> = () => {
   const searchParam = useSearchParamValue();
+  const filterForm = useFilterFormValue();
 
   const { isLoading } = useFetchTradeListQuery();
   const { savedList, saveItem, removeItem } = useSavedList();
@@ -46,6 +49,18 @@ const TradeListTable: FC<TradeListTableProps> = () => {
 
   const count = useMemo(() => filteredTradeList.length, [filteredTradeList]);
 
+  const status = useMemo(() => {
+    if (isLoading) {
+      return "LOADING";
+    }
+
+    if (tradeList.length === 0) {
+      return "EMPTY";
+    }
+
+    return "SUCCESS";
+  }, [isLoading, tradeList]);
+
   const onChangeOrder = (column: OrderType[0]) => {
     const afterOrder: OrderType = [column, order[0] === column ? (order[1] === "asc" ? "desc" : "asc") : "asc"];
 
@@ -65,18 +80,6 @@ const TradeListTable: FC<TradeListTableProps> = () => {
 
   const onChangePage = (page: number) => setPage(page);
 
-  const status = useMemo(() => {
-    if (isLoading) {
-      return "LOADING";
-    }
-
-    if (tradeList.length === 0) {
-      return "EMPTY";
-    }
-
-    return "SUCCESS";
-  }, [isLoading, tradeList]);
-
   const createHeaderCell = (key: keyof TradeItem, label: string) => (
     <div className={styles.headerCell}>
       <button className={styles.headerButton} onClick={() => onChangeOrder(key)}>
@@ -87,6 +90,8 @@ const TradeListTable: FC<TradeListTableProps> = () => {
   );
 
   const createBodyCell = (label: ReactNode) => <div className={styles.rowCell}>{label}</div>;
+
+  useEffect(() => setPage(1), [searchParam, filterForm]);
 
   return (
     <div className={styles.table}>
