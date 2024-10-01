@@ -4,16 +4,18 @@ import { FaTimes } from "react-icons/fa";
 import Button from "@/components/common/button/Button";
 import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
 import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
+import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
 import { useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityData";
-import { getValue, setValue } from "@/utils/localStorage";
+import { setValue } from "@/utils/localStorage";
 
 import styles from "./FavoriteList.module.css";
 
 interface FavoriteListProps {}
 
 const FavoriteList: FC<FavoriteListProps> = () => {
-  const [favoriteCityCodes, setFavoriteCityCodes] = useState<string[]>(getValue(STORAGE_KEY_FAVORITE_LIST) ?? []);
+  const favoriteCityCodes = useFavoriteCityCodeListValue();
+  const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
   const setSearchParam = useSetSearchParamState();
 
   const favoriteList = useMemo(

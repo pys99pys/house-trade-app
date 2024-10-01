@@ -1,11 +1,12 @@
-import { FC, FormEvent, useState } from "react";
+import { FC, FormEvent, useMemo, useState } from "react";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
 import Select from "@/components/common/select/Select";
 import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
-import { STORAGE_KEY_SEARCH_FORM } from "@/constants/storageKeys";
+import { STORAGE_KEY_FAVORITE_LIST, STORAGE_KEY_SEARCH_FORM } from "@/constants/storageKeys";
 import { SearchFormType } from "@/interfaces/SearchForm";
+import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
 import { useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityCodeItems, getCityNameItems, getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
 import { getBeforeYearMonth } from "@/utils/date";
@@ -19,6 +20,9 @@ const defaultCityCode = getFirstCityCode();
 const defaultYearMonth = getBeforeYearMonth();
 
 const SearchForm: FC<SearchFormProps> = () => {
+  const favoriteCityCodes = useFavoriteCityCodeListValue();
+
+  const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
   const setSearchParam = useSetSearchParamState();
 
   const [form, setForm] = useState<SearchFormType>({
@@ -26,6 +30,11 @@ const SearchForm: FC<SearchFormProps> = () => {
     cityCode: defaultCityCode,
     yearMonth: defaultYearMonth,
   });
+
+  const registeredCityCode = useMemo(
+    () => favoriteCityCodes.some((cityCode) => cityCode === form.cityCode),
+    [form.cityCode, favoriteCityCodes]
+  );
 
   const onChangeCityName = (cityName: string) => setForm({ ...form, cityName });
 
@@ -36,6 +45,13 @@ const SearchForm: FC<SearchFormProps> = () => {
       ...form,
       yearMonth: yearMonth.slice(0, 6).replace(/[^0-9]/g, ""),
     });
+
+  const onClickFavorite = () => {
+    const afterFavoriteCityCodes = [...favoriteCityCodes, form.cityCode];
+
+    setFavoriteCityCodes(afterFavoriteCityCodes);
+    setValue(STORAGE_KEY_FAVORITE_LIST, afterFavoriteCityCodes);
+  };
 
   const onSubmit = (e?: FormEvent) => {
     e?.preventDefault();
@@ -67,11 +83,11 @@ const SearchForm: FC<SearchFormProps> = () => {
         <Button type="submit" color="primary">
           검색
         </Button>
-        {
-          <Button color="yellow" onClick={() => alert("구현중")}>
+        {!registeredCityCode && (
+          <Button color="yellow" onClick={onClickFavorite}>
             즐겨찾기
           </Button>
-        }
+        )}
       </form>
     </>
   );
