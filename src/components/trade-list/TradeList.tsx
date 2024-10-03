@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import FavoriteList from "@/components/trade-list/favorite-list/FavoriteList";
 import FilterForm from "@/components/trade-list/filter-form/FilterForm";
+import FilterFormMobile from "@/components/trade-list/filter-form/FilterFormMobile";
 import SearchForm from "@/components/trade-list/search-form/SearchForm";
 import TradeListTable from "@/components/trade-list/trade-list-table/TradeListTable";
 
@@ -34,6 +35,12 @@ const TradeList: FC<TradeListProps> = () => {
     return (
       <div className={styles.tradeListMobile}>
         <SearchFormMobile />
+        <div className={styles.favoriteList}>
+          <FavoriteList />
+        </div>
+        <div className={styles.filterForm}>
+          <FilterFormMobile />
+        </div>
       </div>
     );
   };

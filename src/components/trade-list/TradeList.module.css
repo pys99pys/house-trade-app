@@ -10,3 +10,11 @@
 .tradeListPc .filterForm {
   margin-top: 2rem;
 }
+
+.tradeListMobile .favoriteList {
+  margin-top: 1.5rem;
+}
+
+.tradeListMobile .filterForm {
+  margin-top: 2.25rem;
+}

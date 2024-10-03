@@ -1,15 +1,25 @@
 .favoriteList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.favoriteList button {
+.favoriteList::-webkit-scrollbar {
+  display: none;
+}
+
+.favoriteList ul {
+  display: flex;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.favoriteList ul li button {
   display: flex;
   align-items: center;
 }
 
-.favoriteList button .removeIcon {
+.favoriteList ul li button .removeIcon {
   margin-left: 0.25rem;
   font-size: 1rem;
   color: var(--color-font-gray);
@@ -17,6 +27,6 @@
   transition: color 300ms ease;
 }
 
-.favoriteList button .removeIcon:hover {
+.favoriteList ul li button .removeIcon:hover {
   color: var(--color-red);
 }

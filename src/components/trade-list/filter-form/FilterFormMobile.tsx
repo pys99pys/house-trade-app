@@ -2,9 +2,10 @@ import { FC } from "react";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
+import useTradeList from "@/hooks/useTradeList";
 import { parseToAmountText } from "@/utils/formatter";
 
-import styles from "./FilterForm.module.css";
+import styles from "./FilterFormMobile.module.css";
 import useFilterForm from "./useFilterForm";
 
 interface FilterFormProps {}
@@ -14,7 +15,7 @@ const FilterForm: FC<FilterFormProps> = () => {
     useFilterForm();
 
   return (
-    <div className={styles.filterForm}>
+    <div className={styles.filterFormMobile}>
       <div className={styles.summaryWrap}>
         <span>
           검색결과: <strong>{count}건</strong>
@@ -29,13 +30,15 @@ const FilterForm: FC<FilterFormProps> = () => {
         )}
       </div>
       <div className={styles.buttonWrap}>
-        <Input size="small" placeholder="아파트명" value={filterForm.apartName} onChange={onChangeApartName} />
         <Button size="small" color={filterForm.onlyBaseSize ? "primary" : "default"} onClick={onToggleOnlyBaseSize}>
           국민평수
         </Button>
         <Button size="small" color={filterForm.onlySavedList ? "primary" : "default"} onClick={onToggleOnlySavedList}>
           저장 목록
         </Button>
+      </div>
+      <div className={styles.inputWrap}>
+        <Input size="small" placeholder="아파트명" value={filterForm.apartName} onChange={onChangeApartName} />
       </div>
     </div>
   );

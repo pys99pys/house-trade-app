@@ -6,12 +6,17 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.filterForm .summary strong {
+.filterForm .summaryWrap {
+  display: flex;
+  column-gap: 0.25rem;
+}
+
+.filterForm .summaryWrap strong {
   font-weight: 700;
   color: var(--color-primary);
 }
 
-.filterForm .buttons {
+.filterForm .buttonWrap {
   display: flex;
   gap: 0.5rem;
 }

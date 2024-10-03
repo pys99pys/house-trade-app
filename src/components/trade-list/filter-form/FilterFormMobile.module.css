@@ -1,0 +1,33 @@
+.filterFormMobile {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterFormMobile .summaryWrap {
+  display: flex;
+  column-gap: 0.25rem;
+  justify-content: center;
+}
+
+.filterFormMobile .summaryWrap strong {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.filterFormMobile .buttonWrap {
+  margin-top: 1rem;
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.filterFormMobile .buttonWrap > button {
+  width: 50%;
+}
+
+.filterFormMobile .inputWrap {
+  margin-top: 0.5rem;
+}
+
+.filterFormMobile .inputWrap input {
+  width: 100%;
+}
