@@ -6,24 +6,39 @@ import SearchForm from "@/components/trade-list/search-form/SearchForm";
 import TradeListTable from "@/components/trade-list/trade-list-table/TradeListTable";
 
 import styles from "./TradeList.module.css";
+import SearchFormMobile from "./search-form/SearchFormMobile";
 
 interface TradeListProps {}
 
 const TradeList: FC<TradeListProps> = () => {
-  return (
-    <div className={styles.tradeList}>
-      <SearchForm />
-      <div className={styles.favoriteList}>
-        <FavoriteList />
+  const isPc = window.innerWidth > 640;
+
+  const createPcComponent = () => {
+    return (
+      <div className={styles.tradeListPc}>
+        <SearchForm />
+        <div className={styles.favoriteList}>
+          <FavoriteList />
+        </div>
+        <div className={styles.filterForm}>
+          <FilterForm />
+        </div>
+        <div className={styles.tradeList}>
+          <TradeListTable />
+        </div>
       </div>
-      <div className={styles.filterForm}>
-        <FilterForm />
+    );
+  };
+
+  const createMobileComponent = () => {
+    return (
+      <div className={styles.tradeListMobile}>
+        <SearchFormMobile />
       </div>
-      <div className={styles.tradeList}>
-        <TradeListTable />
-      </div>
-    </div>
-  );
+    );
+  };
+
+  return isPc ? createPcComponent() : createMobileComponent();
 };
 
 export default TradeList;

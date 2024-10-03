@@ -1,12 +1,12 @@
-.tradeList {
+.tradeListPc {
   display: flex;
   flex-direction: column;
 }
 
-.favoriteList {
+.tradeListPc .favoriteList {
   margin-top: 0.75rem;
 }
 
-.filterForm {
+.tradeListPc .filterForm {
   margin-top: 2rem;
 }

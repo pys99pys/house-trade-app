@@ -1,0 +1,27 @@
+.searchFormMobile {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.searchFormMobile .selectWrap {
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.searchFormMobile .selectWrap > select {
+  width: 50%;
+}
+
+.searchFormMobile .inputWrap > input {
+  width: 100%;
+}
+
+.searchFormMobile .buttonWrap {
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.searchFormMobile .buttonWrap > button {
+  flex: 1;
+}

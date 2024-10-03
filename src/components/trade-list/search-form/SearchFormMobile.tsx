@@ -6,18 +6,18 @@ import Select from "@/components/common/select/Select";
 import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
 import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
 
-import styles from "./SearchForm.module.css";
+import styles from "./SearchFormMobile.module.css";
 import useSearchForm from "./useSearchForm";
 
-interface SearchFormProps {}
+interface SearchFormMobileProps {}
 
-const SearchForm: FC<SearchFormProps> = () => {
+const SearchFormMobile: FC<SearchFormMobileProps> = () => {
   const { form, registeredCityCode, onChangeCityName, onChangeCityCode, onChangeYearMonth, onClickFavorite, onSubmit } =
     useSearchForm();
 
   return (
-    <>
-      <form className={styles.searchForm} onSubmit={onSubmit}>
+    <form className={styles.searchFormMobile} onSubmit={onSubmit}>
+      <div className={styles.selectWrap}>
         <Select value={form.cityName} onChange={onChangeCityName}>
           {getCityNameItems().map((cityName) => (
             <option key={cityName} value={cityName}>
@@ -32,7 +32,11 @@ const SearchForm: FC<SearchFormProps> = () => {
             </option>
           ))}
         </Select>
+      </div>
+      <div className={styles.inputWrap}>
         <Input id={ELEMENT_ID_YEAR_MONTH_INPUT} value={form.yearMonth} onChange={onChangeYearMonth} />
+      </div>
+      <div className={styles.buttonWrap}>
         <Button type="submit" color="primary">
           검색
         </Button>
@@ -41,9 +45,9 @@ const SearchForm: FC<SearchFormProps> = () => {
             즐겨찾기
           </Button>
         )}
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
 
-export default SearchForm;
+export default SearchFormMobile;

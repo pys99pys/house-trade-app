@@ -1,6 +1,10 @@
-.header {
+.layout {
+  display: flex;
+  justify-content: center;
+}
+
+.layout .header {
   width: 100%;
-  min-width: 1024px;
   padding: 1.5rem 0;
   display: flex;
   justify-content: center;
@@ -9,7 +13,7 @@
   z-index: 9999;
 }
 
-.header h1 {
+.layout .header h1 {
   padding: 0 1.25rem;
   display: flex;
   align-items: center;
@@ -21,22 +25,28 @@
   transition: background-color 300ms ease;
 }
 
-.header h1 .logo {
+.layout .header h1 .logo {
   font-size: 1.5rem;
 }
 
-.header h1 .text {
+.layout .header h1 .text {
   transform: translateY(2px);
 }
 
-.main {
-  width: 1024px;
-  margin: 0 auto;
+.layout .main {
+  width: var(--container-width);
+  min-width: var(--container-width);
+  margin: 0 1rem;
   padding: 8rem 0;
 }
 
-@media screen and (max-width: 640px) {
-  .header {
-    min-width: 0;
+.layout.mobile .main {
+  min-width: 0;
+  padding: 6.25rem 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .layout {
+    justify-content: flex-start;
   }
 }
