@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { FaRegBuilding } from "react-icons/fa";
 import { RecoilRoot } from "recoil";
@@ -13,8 +13,17 @@ interface LayoutProps {
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {
-  const [isClient, setIsClient] = useState(false);
   const { push } = useRouter();
+  const [isClient, setIsClient] = useState(false);
+  const pathname = usePathname();
+
+  const onClick = () => {
+    if (pathname === TRADE_LIST_PATH) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      push(TRADE_LIST_PATH);
+    }
+  };
 
   useEffect(() => setIsClient(true), []);
 
@@ -26,7 +35,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     <QueryClientProvider client={new QueryClient()}>
       <RecoilRoot>
         <header className={styles.header}>
-          <h1 onClick={() => push(TRADE_LIST_PATH)}>
+          <h1 role="button" onClick={onClick}>
             <FaRegBuilding className={styles.logo} />
             <span className={styles.text}>아파트 실거래가 조회</span>
           </h1>

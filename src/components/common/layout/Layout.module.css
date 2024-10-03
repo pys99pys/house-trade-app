@@ -3,7 +3,9 @@
   padding: 1.5rem 0;
   display: flex;
   justify-content: center;
+  position: fixed;
   background-color: var(--color-primary);
+  z-index: 9999;
 }
 
 .header h1 {
@@ -29,5 +31,11 @@
 .main {
   width: 1024px;
   margin: 0 auto;
-  padding: 3rem 0 8rem;
+  padding: 8rem 0;
+}
+
+@media screen and (max-width: 640px) {
+  .header {
+    min-width: 0;
+  }
 }
