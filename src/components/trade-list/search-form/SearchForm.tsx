@@ -1,9 +1,8 @@
 import { FC } from "react";
 
 import Button from "@/components/common/button/Button";
-import Input from "@/components/common/input/Input";
+import MonthPicker from "@/components/common/month-picker/MonthPicker";
 import Select from "@/components/common/select/Select";
-import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
 import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
 
 import styles from "./SearchForm.module.css";
@@ -32,7 +31,7 @@ const SearchForm: FC<SearchFormProps> = () => {
             </option>
           ))}
         </Select>
-        <Input id={ELEMENT_ID_YEAR_MONTH_INPUT} value={form.yearMonth} onChange={onChangeYearMonth} />
+        <MonthPicker value={form.yearMonth} onChange={onChangeYearMonth} />
         <Button type="submit" color="primary">
           검색
         </Button>

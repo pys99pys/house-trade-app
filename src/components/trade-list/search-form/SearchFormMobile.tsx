@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
+import MonthPicker from "@/components/common/month-picker/MonthPicker";
 import Select from "@/components/common/select/Select";
 import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
 import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
@@ -33,8 +34,8 @@ const SearchFormMobile: FC<SearchFormMobileProps> = () => {
           ))}
         </Select>
       </div>
-      <div className={styles.inputWrap}>
-        <Input id={ELEMENT_ID_YEAR_MONTH_INPUT} value={form.yearMonth} onChange={onChangeYearMonth} />
+      <div className={styles.monthPickerWrap}>
+        <MonthPicker value={form.yearMonth} onChange={onChangeYearMonth} />
       </div>
       <div className={styles.buttonWrap}>
         <Button type="submit" color="primary">

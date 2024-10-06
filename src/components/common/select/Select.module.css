@@ -10,7 +10,6 @@
   transition: border-color 300ms ease;
 }
 
-.select:hover,
 .select:focus {
   border-color: var(--color-primary);
   cursor: pointer;

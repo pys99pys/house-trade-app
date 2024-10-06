@@ -6,7 +6,6 @@
   transition: border-color 300ms ease;
 }
 
-.input:hover,
 .input:focus {
   border-color: var(--color-primary);
 }
