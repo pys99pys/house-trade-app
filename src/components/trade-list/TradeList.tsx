@@ -4,10 +4,11 @@ import FavoriteList from "@/components/trade-list/favorite-list/FavoriteList";
 import FilterForm from "@/components/trade-list/filter-form/FilterForm";
 import FilterFormMobile from "@/components/trade-list/filter-form/FilterFormMobile";
 import SearchForm from "@/components/trade-list/search-form/SearchForm";
+import SearchFormMobile from "@/components/trade-list/search-form/SearchFormMobile";
 import TradeListTable from "@/components/trade-list/trade-list-table/TradeListTable";
+import TradeListTableMobile from "@/components/trade-list/trade-list-table/TradeListTableMobile";
 
 import styles from "./TradeList.module.css";
-import SearchFormMobile from "./search-form/SearchFormMobile";
 
 interface TradeListProps {}
 
@@ -40,6 +41,9 @@ const TradeList: FC<TradeListProps> = () => {
         </div>
         <div className={styles.filterForm}>
           <FilterFormMobile />
+        </div>
+        <div className={styles.tradeList}>
+          <TradeListTableMobile />
         </div>
       </div>
     );

@@ -1,27 +1,32 @@
 import cx from "classnames";
+import classNames from "classnames";
 import { FC } from "react";
 
 import styles from "./Pagination.module.css";
 
 interface PaginationProps {
   per: number;
+  block: number;
   total: number;
   current: number;
   onChange: (page: number) => void;
+
+  size?: "default" | "small";
 }
 
-const MAX = 10;
-
-const Pagination: FC<PaginationProps> = ({ per, total, current, onChange }) => {
+const Pagination: FC<PaginationProps> = ({ per, block, total, current, onChange, size = "default" }) => {
   const last = Math.ceil(total / per);
-  const start = Math.floor((current - 1) / MAX) * MAX + 1;
-  const end = Math.min(start + MAX - 1, last);
-  // const count =
+  const start = Math.floor((current - 1) / block) * block + 1;
+  const end = Math.min(start + block - 1, last);
   const pageArray = new Array(end - start + 1).fill(null).map((_, i) => start + i);
 
   return (
-    <ul className={styles.pagination}>
-      {start > MAX && (
+    <ul
+      className={classNames(styles.pagination, {
+        [styles.small]: size === "small",
+      })}
+    >
+      {start > block && (
         <>
           <li>
             <button onClick={() => onChange(1)}>1</button>
@@ -34,10 +39,7 @@ const Pagination: FC<PaginationProps> = ({ per, total, current, onChange }) => {
 
       {pageArray.map((page) => (
         <li key={page}>
-          <button
-            className={cx({ [styles.active]: page === current })}
-            onClick={() => onChange(page)}
-          >
+          <button className={cx({ [styles.active]: page === current })} onClick={() => onChange(page)}>
             {page}
           </button>
         </li>

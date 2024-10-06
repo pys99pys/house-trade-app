@@ -18,3 +18,7 @@
 .tradeListMobile .filterForm {
   margin-top: 2.25rem;
 }
+
+.tradeListMobile .tradeList {
+  margin-top: 0.5rem;
+}

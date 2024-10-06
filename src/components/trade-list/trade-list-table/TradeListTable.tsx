@@ -2,6 +2,7 @@ import cx from "classnames";
 import { FC, ReactNode } from "react";
 
 import Pagination from "@/components/common/pagination/Pagination";
+import { TRADE_TABLE_PER_PAGE } from "@/constants/rules";
 import { TradeItem } from "@/interfaces/TradeItem";
 import { parseToAmount, parseToAreaSize, parseToFlatSize } from "@/utils/formatter";
 import { compareSavedApartItem } from "@/utils/tradeItem";
@@ -11,15 +12,16 @@ import useTradeListTable from "./useTradeListTable";
 
 interface TradeListTableProps {}
 
-const PER_PAGE = 15;
-
 const TradeListTable: FC<TradeListTableProps> = () => {
   const { status, order, count, page, tradeList, savedApartList, onChangeOrder, onClickList, onChangePage } =
     useTradeListTable();
 
   const createHeaderCell = (key: keyof TradeItem, label: string) => (
     <div className={styles.headerCell}>
-      <button className={styles.headerButton} onClick={() => onChangeOrder(key)}>
+      <button
+        className={styles.headerButton}
+        onClick={() => onChangeOrder([key, order[0] === key ? (order[1] === "asc" ? "desc" : "asc") : "asc"])}
+      >
         {label}
         {order[0] === key && <span className={styles[order[1]]}>▾</span>}
       </button>
@@ -29,7 +31,7 @@ const TradeListTable: FC<TradeListTableProps> = () => {
   const createBodyCell = (label: ReactNode) => <div className={styles.rowCell}>{label}</div>;
 
   return (
-    <div className={styles.table}>
+    <div className={styles.tradeListTable}>
       <div className={styles.header}>
         {createHeaderCell("tradeDate", "거래일")}
         {createHeaderCell("address", "주소지")}
@@ -41,9 +43,7 @@ const TradeListTable: FC<TradeListTableProps> = () => {
 
       <div className={styles.body}>
         {status === "LOADING" && <div className={styles.empty}>조회중...</div>}
-
         {status === "EMPTY" && <div className={styles.empty}>데이터 없음</div>}
-
         {status === "SUCCESS" && (
           <>
             {tradeList.map((item, i) => (
@@ -90,9 +90,9 @@ const TradeListTable: FC<TradeListTableProps> = () => {
           </>
         )}
 
-        {count > PER_PAGE && (
+        {count > TRADE_TABLE_PER_PAGE && (
           <div className={styles.pagination}>
-            <Pagination per={PER_PAGE} total={count} current={page} onChange={onChangePage} />
+            <Pagination per={TRADE_TABLE_PER_PAGE} block={10} total={count} current={page} onChange={onChangePage} />
           </div>
         )}
       </div>

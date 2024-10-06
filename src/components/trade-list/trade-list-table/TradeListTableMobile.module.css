@@ -1,0 +1,71 @@
+.TradeListTableMobile .selectWrap {
+  display: flex;
+  column-gap: 0.5rem;
+}
+
+.TradeListTableMobile .selectWrap select {
+  width: 50%;
+}
+
+.TradeListTableMobile .tableWrap {
+  margin-top: 1rem;
+}
+
+.TradeListTableMobile .tableWrap .loading,
+.TradeListTableMobile .tableWrap .empty {
+  padding: 2.5rem 0;
+  display: flex;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.TradeListTableMobile .tableWrap .list ul {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.TradeListTableMobile .tableWrap .list ul li {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background-color: var(--color-white);
+}
+
+.TradeListTableMobile .tableWrap .list ul li .left {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
+}
+
+.TradeListTableMobile .tableWrap .list ul li .left .apartName {
+  font-weight: 700;
+}
+
+.TradeListTableMobile .tableWrap .list ul li .left .tradeDate,
+.TradeListTableMobile .tableWrap .list ul li .left .etc {
+  font-size: 0.85rem;
+}
+
+.TradeListTableMobile .tableWrap .list ul li .right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  row-gap: 0.25rem;
+}
+
+.TradeListTableMobile .tableWrap .list ul li .right .tradeAmount {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.TradeListTableMobile .pagenationWrap {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+}

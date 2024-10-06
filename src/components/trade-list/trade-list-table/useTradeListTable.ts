@@ -21,7 +21,7 @@ interface Return {
   tradeList: TradeItem[];
   savedApartList: SavedApartItem[];
 
-  onChangeOrder: (column: OrderType[0]) => void;
+  onChangeOrder: (order: OrderType) => void;
   onClickList: (tradeItem: { address: TradeItem["address"]; apartName: TradeItem["apartName"] }) => void;
   onChangePage: (page: number) => void;
 }
@@ -66,9 +66,7 @@ const useTradeListTable = (): Return => {
     return "SUCCESS";
   }, [isLoading, tradeList]);
 
-  const onChangeOrder = (column: OrderType[0]) => {
-    const afterOrder: OrderType = [column, order[0] === column ? (order[1] === "asc" ? "desc" : "asc") : "asc"];
-
+  const onChangeOrder = (afterOrder: OrderType) => {
     setValue(STORAGE_KEY_ORDER, afterOrder);
     setOrder(afterOrder);
   };
