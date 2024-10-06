@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { STORAGE_KEY_ORDER } from "@/constants/storageKeys";
 import useSavedList from "@/hooks/useSavedList";
 import useTradeList from "@/hooks/useTradeList";
+import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
 import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
 import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
-import { useFilterFormValue } from "@/stores/filterFormStore";
+import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
 import { getValue, setValue } from "@/utils/localStorage";
 import { compareSavedApartItem, sliceItems, sortItems } from "@/utils/tradeItem";
@@ -29,10 +30,13 @@ interface Return {
 const useTradeListTable = (): Return => {
   const searchParam = useSearchParamValue();
   const filterForm = useFilterFormValue();
+  const setFilterForm = useSetFilterFormState();
 
   const { isLoading } = useFetchTradeListQuery();
   const { savedList, saveItem, removeItem } = useSavedList();
   const { tradeList: filteredTradeList } = useTradeList();
+
+  const copiedFilterForm = useRef<FilterType>(filterForm);
 
   const [page, setPage] = useState<number>(1);
   const [order, setOrder] = useState<OrderType>(getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]);
@@ -85,7 +89,15 @@ const useTradeListTable = (): Return => {
     setPage(page);
   };
 
-  useEffect(() => setPage(1), [searchParam, filterForm]);
+  useEffect(() => {
+    setPage(1);
+    setFilterForm({ ...copiedFilterForm.current, apartName: "" });
+  }, [searchParam, setFilterForm]);
+
+  useEffect(() => {
+    setPage(1);
+    copiedFilterForm.current = filterForm;
+  }, [filterForm]);
 
   return { status, order, count, page, tradeList, savedApartList, onChangeOrder, onClickList, onChangePage };
 };
