@@ -1,11 +1,8 @@
-import { FC, useMemo, useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { useMemo } from "react";
 
-import Button from "@/components/common/button/Button";
-import { ELEMENT_ID_YEAR_MONTH_INPUT } from "@/constants/elementId";
 import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
-import { useSetSearchParamState } from "@/stores/searchParamStore";
+import { useSetSearchParamSessionState } from "@/stores/searchParamSessionStore";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityData";
 import { setValue } from "@/utils/localStorage";
 
@@ -18,7 +15,7 @@ interface Return {
 const useFavoriteList = (): Return => {
   const favoriteCityCodes = useFavoriteCityCodeListValue();
   const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
-  const setSearchParam = useSetSearchParamState();
+  const setSearchParamSession = useSetSearchParamSessionState();
 
   const favoriteList = useMemo(
     () =>
@@ -32,11 +29,7 @@ const useFavoriteList = (): Return => {
   );
 
   const onClick = (cityCode: string) => {
-    const yearMonthInput = document.getElementById(ELEMENT_ID_YEAR_MONTH_INPUT) as HTMLInputElement | null;
-
-    if (yearMonthInput) {
-      setSearchParam({ cityCode, yearMonth: yearMonthInput.value });
-    }
+    setSearchParamSession({ cityCode });
   };
 
   const onRemove = (cityCode: string) => {
