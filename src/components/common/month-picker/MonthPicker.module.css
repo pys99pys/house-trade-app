@@ -1,10 +1,6 @@
 .monthPicker {
   width: 9.25rem;
-  height: var(--form-height);
   padding: 0 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   position: relative;
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
@@ -13,18 +9,28 @@
   transition: border-color 300ms ease;
 }
 
-.monthPicker .icon {
+.monthPicker .inputWrap {
+  width: 100%;
+  height: var(--form-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monthPicker .inputWrap .icon {
   transform: translateY(1px);
 }
 
 .monthPicker .picker {
-  width: 10rem;
+  width: 12.5rem;
+  min-width: 100%;
   padding: 1rem;
   position: absolute;
   top: calc(100% + 3px);
   left: -1px;
   border: 1px solid var(--color-primary);
   border-radius: var(--border-radius);
+  box-sizing: border-box;
   background-color: var(--color-white);
   z-index: 10;
 }
@@ -43,7 +49,7 @@
 }
 
 .monthPicker .picker .monthPickerWrap {
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .monthPicker .picker .monthPickerWrap ul {
@@ -53,7 +59,7 @@
 
 .monthPicker .picker .monthPickerWrap ul li {
   width: 33.3333%;
-  padding: 0.1rem 0;
+  padding: 0.25rem 0;
   display: flex;
   justify-content: center;
 }

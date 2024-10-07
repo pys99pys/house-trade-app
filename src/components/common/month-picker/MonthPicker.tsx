@@ -10,14 +10,17 @@ interface MonthPickerProps {
 }
 
 const MonthPicker: FC<MonthPickerProps> = ({ value, onChange }) => {
-  const ref = useRef<HTMLDivElement | null>(null);
   const [isShow, setIsShow] = useState(false);
 
   const yearValue = useMemo(() => value.substring(0, 4), [value]);
   const monthValue = useMemo(() => value.substring(4, 6), [value]);
 
-  const pickerCloseEvent = useCallback(() => {
-    setTimeout(() => setIsShow(false), 50);
+  const pickerCloseEvent = useCallback((e: MouseEvent) => {
+    const isInPicker = !!(e.target as HTMLElement).closest(`.${styles.monthPicker}`);
+
+    if (!isInPicker) {
+      setIsShow(false);
+    }
   }, []);
 
   const onClickPicker = () => {
@@ -26,41 +29,44 @@ const MonthPicker: FC<MonthPickerProps> = ({ value, onChange }) => {
 
   const onClickPrevYear = () => {
     const prevYear = Number(yearValue) - 1;
+
     onChange(prevYear.toString() + monthValue);
   };
 
   const onClickNextYear = () => {
     const nextYear = Number(yearValue) + 1;
+
     onChange(nextYear.toString() + monthValue);
   };
 
   const onClickMonth = (month: number) => {
     const afterMonth = month.toString().padStart(2, "0");
+
     onChange(yearValue + afterMonth);
+    setIsShow(false);
   };
 
   useEffect(() => {
     if (isShow) {
       document.body.addEventListener("click", pickerCloseEvent);
-    } else {
-      document.body.removeEventListener("click", pickerCloseEvent);
     }
   }, [isShow, pickerCloseEvent]);
 
   return (
     <div
-      ref={ref}
       className={classNames(styles.monthPicker, {
         [styles.active]: isShow,
       })}
-      onClick={onClickPicker}
     >
-      <div>
-        {yearValue}년 {Number(monthValue)}월
+      <div className={styles.inputWrap} onClick={onClickPicker}>
+        <div>
+          {yearValue}년 {Number(monthValue)}월
+        </div>
+        <div className={styles.icon}>
+          <FaCalendarAlt />
+        </div>
       </div>
-      <div className={styles.icon}>
-        <FaCalendarAlt />
-      </div>
+
       {isShow && (
         <div className={styles.picker}>
           <div className={styles.yearPickerWrap}>
