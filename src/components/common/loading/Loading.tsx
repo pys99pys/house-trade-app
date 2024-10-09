@@ -17,7 +17,7 @@ const Loading: FC<LoadingProps> = () => {
     if (timer.current) {
       timer.current = window.setTimeout(setLoadingAction, 200);
     } else {
-      timer.current = window.setTimeout(setLoadingAction, 50);
+      timer.current = window.setTimeout(setLoadingAction, 0);
     }
 
     return () => clearTimeout(timer.current);

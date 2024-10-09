@@ -1,5 +1,6 @@
 import { FC } from "react";
 
+import Loading from "@/components/common/loading/Loading";
 import Pagination from "@/components/common/pagination/Pagination";
 import Select from "@/components/common/select/Select";
 import { TRADE_TABLE_PER_PAGE } from "@/constants/rules";
@@ -58,8 +59,12 @@ const TradeListTableMobile: FC<TradeListTableMobileProps> = () => {
         </Select>
       </div>
       <div className={styles.tableWrap}>
-        {status === "LOADING" && <div className={styles.loading}>조회중</div>}
-        {status === "EMPTY" && <div className={styles.loading}>데이터 없음</div>}
+        {status === "LOADING" && (
+          <div className={styles.loading}>
+            <Loading />
+          </div>
+        )}
+        {status === "EMPTY" && <div className={styles.empty}>데이터 없음</div>}
         {status === "SUCCESS" && (
           <div className={styles.list}>
             <ul>
