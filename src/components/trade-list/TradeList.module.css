@@ -11,6 +11,10 @@
   margin-top: 2rem;
 }
 
+.tradeListPc .tradeList {
+  margin-top: 0.75rem;
+}
+
 .tradeListMobile .favoriteList {
   margin-top: 1.5rem;
 }

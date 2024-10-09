@@ -18,17 +18,14 @@ const TradeListTable: FC<TradeListTableProps> = () => {
 
   const createHeaderCell = (key: keyof TradeItem, label: string) => (
     <div className={styles.headerCell}>
-      <button
-        className={styles.headerButton}
-        onClick={() => onChangeOrder([key, order[0] === key ? (order[1] === "asc" ? "desc" : "asc") : "asc"])}
-      >
-        {label}
+      <button onClick={() => onChangeOrder([key, order[0] === key ? (order[1] === "asc" ? "desc" : "asc") : "asc"])}>
+        <span>{label}</span>
         {order[0] === key && <span className={styles[order[1]]}>▾</span>}
       </button>
     </div>
   );
 
-  const createBodyCell = (label: ReactNode) => <div className={styles.rowCell}>{label}</div>;
+  const createBodyCell = (label: ReactNode) => <div className={styles.cell}>{label}</div>;
 
   return (
     <div className={styles.tradeListTable}>
@@ -42,60 +39,59 @@ const TradeListTable: FC<TradeListTableProps> = () => {
       </div>
 
       <div className={styles.body}>
-        {status === "LOADING" && <div className={styles.empty}>조회중...</div>}
+        {status === "LOADING" && <div className={styles.loading}>조회중...</div>}
+
         {status === "EMPTY" && <div className={styles.empty}>데이터 없음</div>}
-        {status === "SUCCESS" && (
-          <>
-            {tradeList.map((item, i) => (
-              <div
-                key={i}
-                className={cx(styles.row, {
-                  [styles.active]: savedApartList.some((savedApartItem) => compareSavedApartItem(item, savedApartItem)),
-                })}
-                onClick={() => onClickList(item)}
-              >
-                {createBodyCell(<>{item.tradeDate}</>)}
-                {createBodyCell(<>{item.address}</>)}
-                {createBodyCell(
-                  <>
-                    {item.apartName}
-                    <small>
-                      {(() => {
-                        const subTexts: string[] = [];
 
-                        if (item.floor !== null) subTexts.push(`${item.floor}층`);
-                        if (item.buildedYear !== null) subTexts.push(`${item.buildedYear}년식`);
-                        if (item.householdsNumber !== null) subTexts.push(`${item.householdsNumber}세대`);
+        {status === "SUCCESS" &&
+          tradeList.map((item, i) => (
+            <div
+              key={i}
+              className={cx(styles.row, {
+                [styles.active]: savedApartList.some((savedApartItem) => compareSavedApartItem(item, savedApartItem)),
+              })}
+              onClick={() => onClickList(item)}
+            >
+              {createBodyCell(<>{item.tradeDate}</>)}
+              {createBodyCell(<>{item.address}</>)}
+              {createBodyCell(
+                <div className={styles.wrap}>
+                  {item.apartName}
+                  <small>
+                    {(() => {
+                      const subTexts: string[] = [];
 
-                        return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
-                      })()}
-                    </small>
-                  </>
-                )}
-                {createBodyCell(
-                  item.size && (
-                    <>
-                      {parseToFlatSize(item.size)}평<small>({parseToAreaSize(item.size)}㎡)</small>
-                    </>
-                  )
-                )}
-                {createBodyCell(
-                  <span className={cx({ [styles.newRecord]: item.isNewRecord })}>
-                    {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
-                  </span>
-                )}
-                {createBodyCell(item.maxTradeAmount > 0 ? <>{parseToAmount(item.maxTradeAmount)}억원</> : null)}
-              </div>
-            ))}
-          </>
-        )}
+                      if (item.floor !== null) subTexts.push(`${item.floor}층`);
+                      if (item.buildedYear !== null) subTexts.push(`${item.buildedYear}년식`);
+                      if (item.householdsNumber !== null) subTexts.push(`${item.householdsNumber}세대`);
 
-        {count > TRADE_TABLE_PER_PAGE && (
-          <div className={styles.pagination}>
-            <Pagination per={TRADE_TABLE_PER_PAGE} block={10} total={count} current={page} onChange={onChangePage} />
-          </div>
-        )}
+                      return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
+                    })()}
+                  </small>
+                </div>
+              )}
+              {createBodyCell(
+                item.size && (
+                  <div className={styles.wrap}>
+                    {parseToFlatSize(item.size)}평<small>({parseToAreaSize(item.size)}㎡)</small>
+                  </div>
+                )
+              )}
+              {createBodyCell(
+                <span className={cx({ [styles.highlight]: item.isNewRecord })}>
+                  {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
+                </span>
+              )}
+              {createBodyCell(item.maxTradeAmount > 0 ? <>{parseToAmount(item.maxTradeAmount)}억원</> : null)}
+            </div>
+          ))}
       </div>
+
+      {status === "SUCCESS" && count > TRADE_TABLE_PER_PAGE && (
+        <div className={styles.pagination}>
+          <Pagination per={TRADE_TABLE_PER_PAGE} block={10} total={count} current={page} onChange={onChangePage} />
+        </div>
+      )}
     </div>
   );
 };
