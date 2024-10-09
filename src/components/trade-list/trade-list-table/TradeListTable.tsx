@@ -1,6 +1,8 @@
 import cx from "classnames";
 import { FC, ReactNode } from "react";
+import { FaTrash } from "react-icons/fa";
 
+import Loading from "@/components/common/loading/Loading";
 import Pagination from "@/components/common/pagination/Pagination";
 import { TRADE_TABLE_PER_PAGE } from "@/constants/rules";
 import { TradeItem } from "@/interfaces/TradeItem";
@@ -39,7 +41,11 @@ const TradeListTable: FC<TradeListTableProps> = () => {
       </div>
 
       <div className={styles.body}>
-        {status === "LOADING" && <div className={styles.loading}>조회중...</div>}
+        {status === "LOADING" && (
+          <div className={styles.loading}>
+            <Loading />
+          </div>
+        )}
 
         {status === "EMPTY" && <div className={styles.empty}>데이터 없음</div>}
 

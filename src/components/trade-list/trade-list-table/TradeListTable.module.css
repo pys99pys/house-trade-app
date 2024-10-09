@@ -41,6 +41,19 @@
   row-gap: 0.5rem;
 }
 
+.tradeListTable .body .loading,
+.tradeListTable .body .empty {
+  padding: 3.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.tradeListTable .body .empty {
+  font-weight: 700;
+}
+
 .tradeListTable .body .row {
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);

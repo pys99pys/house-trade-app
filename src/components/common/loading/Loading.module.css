@@ -1,0 +1,21 @@
+.loading {
+  display: flex;
+  column-gap: 0.75rem;
+}
+
+.loading span {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 3px;
+  background-color: #666;
+  opacity: 0;
+  transform: scale(0);
+  transition:
+    transform 350ms ease,
+    opacity 350ms ease;
+}
+
+.loading span.active {
+  opacity: 1;
+  transform: scale(1);
+}
