@@ -89,9 +89,3 @@
   min-width: 0;
   padding: 6.5rem 0;
 }
-
-@media screen and (max-width: 1024px) {
-  .layout {
-    justify-content: flex-start;
-  }
-}

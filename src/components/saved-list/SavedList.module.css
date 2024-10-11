@@ -19,6 +19,7 @@
 .savedList div ul li button {
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .savedList div ul li button span {
@@ -32,4 +33,11 @@
 .savedList div ul li button span:hover {
   color: var(--color-red);
   cursor: pointer;
+}
+
+@media screen and (max-width: 1024px) {
+  .savedList div ul {
+    overflow: auto;
+    flex-wrap: nowrap;
+  }
 }
