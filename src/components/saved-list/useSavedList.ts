@@ -2,9 +2,16 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { TRADE_LIST_PATH } from "@/constants/paths";
-import { useApartListValue } from "@/stores/apartListStore";
-import { parseApartItemKey } from "@/utils/apartListUtil";
+import { APART_LIST_STORAGE_KEY } from "@/constants/storageKeys";
+import { useApartListValue, useSetApartListState } from "@/stores/apartListStore";
+import {
+  createApartItemKey,
+  createApartList,
+  filterApartListWithCityCode,
+  parseApartItemKey,
+} from "@/utils/apartListUtil";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityDataUtil";
+import { setValue } from "@/utils/localStorage";
 
 interface Item {
   address: string;
@@ -18,10 +25,12 @@ interface Return {
     items: Item[];
   }[];
   onClick: (cityCode: string, item: Item) => void;
+  onRemove: (cityCode: string, item: Item) => void;
 }
 
 const useSavedList = (): Return => {
   const navigate = useNavigate();
+  const setApartList = useSetApartListState();
 
   const apartList = useApartListValue();
 
@@ -39,7 +48,23 @@ const useSavedList = (): Return => {
     navigate(TRADE_LIST_PATH, { state: { cityCode, apartName: item.apartName } });
   };
 
-  return { list, onClick };
+  const onRemove = (cityCode: string, item: Item) => {
+    const apartItemKey = createApartItemKey({
+      address: item.address,
+      apartName: item.apartName,
+    });
+    const filteredApartList = filterApartListWithCityCode(cityCode, apartList);
+    const afterApartItems = filteredApartList.filter((item) => item !== apartItemKey);
+    const afterApartList = createApartList(apartList, {
+      cityCode: cityCode,
+      items: afterApartItems,
+    });
+
+    setApartList(afterApartList);
+    setValue(APART_LIST_STORAGE_KEY, afterApartList);
+  };
+
+  return { list, onClick, onRemove };
 };
 
 export default useSavedList;

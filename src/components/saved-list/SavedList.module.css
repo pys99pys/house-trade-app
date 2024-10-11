@@ -4,16 +4,29 @@
   gap: 2.5rem;
 }
 
+.savedList .empty {
+  padding: 2.5rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--border-radius);
+  background-color: var(--color-button);
+  font-weight: 700;
+}
+
 .savedList div h6 {
   font-size: 1.05rem;
   font-weight: 700;
 }
 
 .savedList div ul {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  border-radius: var(--border-radius);
+  background-color: var(--color-button);
 }
 
 .savedList div ul li button {
