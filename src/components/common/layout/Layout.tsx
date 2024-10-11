@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { FaRegBuilding } from "react-icons/fa";
@@ -31,13 +32,13 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     setIsClient(true);
   };
 
-  const setMobileState = () => {
+  const setMobileClassName = () => {
     setIsMobile(window.innerWidth <= 640);
   };
 
   useEffect(() => {
     setClientState();
-    setMobileState();
+    setMobileClassName();
   }, []);
 
   if (!isClient) {
@@ -49,10 +50,18 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       <RecoilRoot>
         <div className={classNames(styles.layout, { [styles.mobile]: isMobile })}>
           <header className={styles.header}>
-            <h1 role="button" onClick={onClick}>
-              <FaRegBuilding className={styles.logo} />
-              <span className={styles.text}>아파트 실거래가 조회</span>
-            </h1>
+            <div className={styles.container}>
+              <h1 role="button" onClick={onClick}>
+                <FaRegBuilding className={styles.logo} />
+                <span className={styles.text}>아파트 실거래가 조회</span>
+              </h1>
+              <nav>
+                <Link href={""} className={styles.active}>
+                  실거래가 조회
+                </Link>
+                <Link href={""}>저장 목록</Link>
+              </nav>
+            </div>
           </header>
           <main className={styles.main}>{children}</main>
         </div>

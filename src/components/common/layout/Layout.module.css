@@ -5,7 +5,6 @@
 
 .layout .header {
   width: 100%;
-  padding: 1.5rem 0;
   display: flex;
   justify-content: center;
   position: fixed;
@@ -13,24 +12,54 @@
   z-index: 9999;
 }
 
-.layout .header h1 {
-  padding: 0 1.25rem;
+.layout .header .container {
+  width: var(--container-width);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.layout .header .container h1 {
   display: flex;
   align-items: center;
   gap: 0.35rem;
   font-family: "Black Han Sans";
   font-size: 1.25rem;
   color: var(--color-white);
-  transform: translateX(-1.25rem);
-  transition: background-color 300ms ease;
 }
 
-.layout .header h1 .logo {
+.layout .header .container h1 .logo {
   font-size: 1.5rem;
 }
 
-.layout .header h1 .text {
+.layout .header .container h1 .text {
   transform: translateY(2px);
+}
+
+.layout .header .container nav {
+  display: flex;
+}
+
+.layout .header .container nav a {
+  padding: 1.75rem 1.25rem;
+  text-decoration: none;
+  font-weight: 500;
+  color: var(--color-white);
+  opacity: 0.85;
+  transition:
+    background-color 300ms,
+    opacity 300ms,
+    ease;
+}
+
+.layout .header .container nav a:hover,
+.layout .header .container nav a.active {
+  font-weight: 900;
+  opacity: 1;
+}
+
+.layout .header .container nav a.active {
+  background-color: var(--color-primary-hover);
 }
 
 .layout .main {
@@ -40,9 +69,30 @@
   padding: 8rem 0;
 }
 
+.layout.mobile .header {
+  padding: 0.75rem 0;
+}
+
+.layout.mobile .header .container {
+  width: 100%;
+  padding: 0 1rem;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.layout.mobile .header .container h1 {
+  transform: scale(0.9);
+  transform-origin: center;
+}
+
+.layout.mobile .header .container nav a {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
 .layout.mobile .main {
   min-width: 0;
-  padding: 6.25rem 0;
+  padding: 6.5rem 0;
 }
 
 @media screen and (max-width: 1024px) {
