@@ -1,13 +1,14 @@
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
 import { FAVORITE_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { SearchFormType } from "@/interfaces/SearchForm";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
-import { useSearchParamSessionValue, useSetSearchParamSessionState } from "@/stores/searchParamSessionStore";
 import { useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityNameWithCode, getFirstCityCode } from "@/utils/cityDataUtil";
 import { getBeforeYearMonth } from "@/utils/dateUtil";
 import { setValue } from "@/utils/localStorage";
+import { parseTradeListPageQueryParam } from "@/utils/queryParams";
 
 const defaultCityCode = getFirstCityCode();
 const defaultYearMonth = getBeforeYearMonth();
@@ -24,12 +25,12 @@ interface Return {
 }
 
 const useSearchForm = (): Return => {
+  const params = useSearchParams();
+  const param = params?.get("param") ?? "";
   const favoriteCityCodes = useFavoriteCityCodeListValue();
-  const searchParamSession = useSearchParamSessionValue();
 
   const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
   const setSearchParam = useSetSearchParamState();
-  const setSearchParamSession = useSetSearchParamSessionState();
 
   const [form, setForm] = useState<SearchFormType>({
     cityName: getCityNameWithCode(defaultCityCode),
@@ -68,20 +69,19 @@ const useSearchForm = (): Return => {
   };
 
   useEffect(() => {
-    if (searchParamSession) {
+    const parsedParam = parseTradeListPageQueryParam(param);
+
+    if (parsedParam.cityCode) {
       const afterForm = {
         ...copiedForm.current,
-        ...(searchParamSession.cityCode && {
-          cityCode: searchParamSession.cityCode,
-          cityName: getCityNameWithCode(searchParamSession.cityCode),
-        }),
+        cityCode: parsedParam.cityCode,
+        cityName: getCityNameWithCode(parsedParam.cityCode),
       };
 
       setForm(afterForm);
       setSearchParam({ cityCode: afterForm.cityCode, yearMonth: afterForm.yearMonth });
-      setSearchParamSession(null);
     }
-  }, [searchParamSession, setSearchParam, setSearchParamSession]);
+  }, [param, setSearchParam]);
 
   useEffect(() => {
     copiedForm.current = form;

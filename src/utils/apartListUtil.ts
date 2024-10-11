@@ -17,6 +17,20 @@ export const createApartItemKey = (tradeItem: {
   return [tradeItem.address.replaceAll(" ", "_"), tradeItem.apartName.replaceAll(" ", "_")].join("__");
 };
 
+export const parseApartItemKey = (
+  key: string
+): {
+  address: TradeItem["address"];
+  apartName: TradeItem["apartName"];
+} => {
+  const [address, apartName] = key.split("__");
+
+  return {
+    address: address.replaceAll("_", " "),
+    apartName: apartName.replaceAll("_", " "),
+  };
+};
+
 export const distinctApartList = (apartList: string[]): string[] => {
   return apartList.reduce((acc: string[], item: string) => (acc.includes(item) ? acc : [...acc, item]), []);
 };

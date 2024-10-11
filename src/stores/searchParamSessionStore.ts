@@ -1,6 +1,6 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 
-const searchParamSessionStore = atom<{ cityCode?: string } | null>({
+const searchParamSessionStore = atom<{ cityCode?: string; apartName?: string } | null>({
   key: "searchParamSessionStore",
   default: null,
 });

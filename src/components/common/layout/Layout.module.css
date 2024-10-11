@@ -45,17 +45,12 @@
   text-decoration: none;
   font-weight: 500;
   color: var(--color-white);
-  opacity: 0.85;
-  transition:
-    background-color 300ms,
-    opacity 300ms,
-    ease;
+  transition: background-color 300ms ease;
 }
 
 .layout .header .container nav a:hover,
 .layout .header .container nav a.active {
   font-weight: 900;
-  opacity: 1;
 }
 
 .layout .header .container nav a.active {

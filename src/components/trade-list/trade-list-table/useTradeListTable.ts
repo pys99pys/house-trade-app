@@ -6,7 +6,7 @@ import { OrderType } from "@/interfaces/Order";
 import { TradeItem } from "@/interfaces/TradeItem";
 import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
 import { useApartListValue, useSetApartListState } from "@/stores/apartListStore";
-import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormStore";
+import { useFilterFormValue } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
 import {
   createApartItemKey,
@@ -34,16 +34,13 @@ interface Return {
 }
 
 const useTradeListTable = (): Return => {
-  const { data } = useFetchTradeListQuery();
+  const { isLoading, data } = useFetchTradeListQuery();
 
   const searchParamValue = useSearchParamValue();
   const filterFormValue = useFilterFormValue();
   const apartListValue = useApartListValue();
 
-  const setFilterForm = useSetFilterFormState();
   const setApartList = useSetApartListState();
-
-  const { isLoading } = useFetchTradeListQuery();
 
   const copiedFilterForm = useRef<FilterType>(filterFormValue);
 
@@ -129,8 +126,7 @@ const useTradeListTable = (): Return => {
 
   useEffect(() => {
     setPage(1);
-    setFilterForm({ ...copiedFilterForm.current, apartName: "" });
-  }, [searchParamValue, setFilterForm]);
+  }, []);
 
   useEffect(() => {
     setPage(1);

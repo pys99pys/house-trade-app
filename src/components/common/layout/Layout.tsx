@@ -5,7 +5,7 @@ import { FC, ReactNode, useEffect, useState } from "react";
 import { FaRegBuilding } from "react-icons/fa";
 import { RecoilRoot } from "recoil";
 
-import { TRADE_LIST_PATH } from "@/constants/paths";
+import { SAVED_LIST_PATH, TRADE_LIST_PATH } from "@/constants/paths";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import styles from "./Layout.module.css";
@@ -21,11 +21,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   const pathname = usePathname();
 
   const onClick = () => {
-    if (pathname === TRADE_LIST_PATH) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      push(TRADE_LIST_PATH);
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const setClientState = () => {
@@ -56,10 +52,12 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                 <span className={styles.text}>아파트 실거래가 조회</span>
               </h1>
               <nav>
-                <Link href={""} className={styles.active}>
+                <Link href={TRADE_LIST_PATH} className={classNames({ [styles.active]: pathname === TRADE_LIST_PATH })}>
                   실거래가 조회
                 </Link>
-                <Link href={""}>저장 목록</Link>
+                <Link href={SAVED_LIST_PATH} className={classNames({ [styles.active]: pathname === SAVED_LIST_PATH })}>
+                  저장 목록
+                </Link>
               </nav>
             </div>
           </header>
