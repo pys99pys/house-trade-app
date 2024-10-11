@@ -1,4 +1,4 @@
-import { FC, lazy } from "react";
+import { FC, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
@@ -12,6 +12,14 @@ const TradeList = lazy(() => import("@/components/trade-list/TradeList"));
 const SavedList = lazy(() => import("@/components/saved-list/SavedList"));
 
 const App: FC<AppProps> = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => setIsClient(true), []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <QueryClientProvider client={new QueryClient()}>
       <RecoilRoot>
