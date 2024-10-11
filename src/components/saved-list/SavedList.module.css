@@ -25,8 +25,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
-  background-color: var(--color-button);
+  /* background-color: var(--color-button); */
 }
 
 .savedList div ul li button {
