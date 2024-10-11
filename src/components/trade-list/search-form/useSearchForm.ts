@@ -1,14 +1,16 @@
 import { useSearchParams } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { FAVORITE_LIST_STORAGE_KEY } from "@/constants/storageKeys";
+import { FilterType } from "@/interfaces/Filter";
 import { SearchFormType } from "@/interfaces/SearchForm";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
+import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormStore";
 import { useSetSearchParamState } from "@/stores/searchParamStore";
 import { getCityNameWithCode, getFirstCityCode } from "@/utils/cityDataUtil";
 import { getBeforeYearMonth } from "@/utils/dateUtil";
 import { setValue } from "@/utils/localStorage";
-import { parseTradeListPageQueryParam } from "@/utils/queryParams";
 
 const defaultCityCode = getFirstCityCode();
 const defaultYearMonth = getBeforeYearMonth();
@@ -25,11 +27,12 @@ interface Return {
 }
 
 const useSearchForm = (): Return => {
-  const params = useSearchParams();
-  const param = params?.get("param") ?? "";
+  const locationState = useLocation().state;
   const favoriteCityCodes = useFavoriteCityCodeListValue();
+  const filterForm = useFilterFormValue();
 
   const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
+  const setFilterForm = useSetFilterFormState();
   const setSearchParam = useSetSearchParamState();
 
   const [form, setForm] = useState<SearchFormType>({
@@ -39,6 +42,7 @@ const useSearchForm = (): Return => {
   });
 
   const copiedForm = useRef<SearchFormType>(form);
+  const copiedFilterForm = useRef<FilterType>(filterForm);
 
   const registeredCityCode = useMemo(
     () => favoriteCityCodes.some((cityCode) => cityCode === form.cityCode),
@@ -69,23 +73,26 @@ const useSearchForm = (): Return => {
   };
 
   useEffect(() => {
-    const parsedParam = parseTradeListPageQueryParam(param);
-
-    if (parsedParam.cityCode) {
+    if (locationState?.cityCode) {
       const afterForm = {
         ...copiedForm.current,
-        cityCode: parsedParam.cityCode,
-        cityName: getCityNameWithCode(parsedParam.cityCode),
+        cityCode: locationState.cityCode,
+        cityName: getCityNameWithCode(locationState.cityCode),
       };
 
       setForm(afterForm);
       setSearchParam({ cityCode: afterForm.cityCode, yearMonth: afterForm.yearMonth });
+      setFilterForm({ ...copiedFilterForm.current, apartName: "" });
     }
-  }, [param, setSearchParam]);
+  }, [locationState, setSearchParam, setFilterForm]);
 
   useEffect(() => {
     copiedForm.current = form;
   }, [form]);
+
+  useEffect(() => {
+    copiedFilterForm.current = filterForm;
+  }, [filterForm]);
 
   return {
     form,

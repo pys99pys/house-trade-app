@@ -1,5 +1,6 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 import { FilterType } from "@/interfaces/Filter";
 import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
@@ -8,7 +9,6 @@ import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormSt
 import { useSearchParamValue } from "@/stores/searchParamStore";
 import { filterApartListWithCityCode } from "@/utils/apartListUtil";
 import { parseToAverageAmountText } from "@/utils/formatter";
-import { parseTradeListPageQueryParam } from "@/utils/queryParams";
 import { filterItems } from "@/utils/tradeItemUtil";
 
 interface Return {
@@ -22,13 +22,11 @@ interface Return {
 
 const useFilterForm = (): Return => {
   const { data } = useFetchTradeListQuery();
-  const params = useSearchParams();
-  const param = params?.get("param") ?? "";
 
+  const locationState = useLocation().state;
   const searchParamValue = useSearchParamValue();
   const filterFormValue = useFilterFormValue();
   const apartListValue = useApartListValue();
-
   const copiedFilterFormValue = useRef<FilterType>(filterFormValue);
 
   const setFilterForm = useSetFilterFormState();
@@ -58,12 +56,10 @@ const useFilterForm = (): Return => {
   };
 
   useEffect(() => {
-    const parsedParam = parseTradeListPageQueryParam(param);
-
-    if (parsedParam.apartName) {
-      setFilterForm({ ...copiedFilterFormValue.current, apartName: parsedParam.apartName });
+    if (locationState?.apartName) {
+      setFilterForm({ ...copiedFilterFormValue.current, apartName: locationState.apartName });
     }
-  }, [param, setFilterForm]);
+  }, [locationState, setFilterForm]);
 
   useEffect(() => {
     copiedFilterFormValue.current = filterFormValue;

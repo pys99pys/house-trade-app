@@ -1,5 +1,9 @@
-import { redirect } from "next/navigation";
+"use client";
 
-const Page = () => redirect("/trade-list");
+import App from "@/App";
+
+const Page = () => {
+  return <App />;
+};
 
 export default Page;

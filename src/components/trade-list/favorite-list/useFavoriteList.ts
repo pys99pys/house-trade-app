@@ -1,8 +1,9 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
+import { TRADE_LIST_PATH } from "@/constants/paths";
 import { FAVORITE_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
-import { useSetSearchParamSessionState } from "@/stores/searchParamSessionStore";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityDataUtil";
 import { setValue } from "@/utils/localStorage";
 
@@ -14,8 +15,9 @@ interface Return {
 
 const useFavoriteList = (): Return => {
   const favoriteCityCodes = useFavoriteCityCodeListValue();
+
+  const navigate = useNavigate();
   const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
-  const setSearchParamSession = useSetSearchParamSessionState();
 
   const favoriteList = useMemo(
     () =>
@@ -29,7 +31,7 @@ const useFavoriteList = (): Return => {
   );
 
   const onClick = (cityCode: string) => {
-    setSearchParamSession({ cityCode });
+    navigate(TRADE_LIST_PATH, { state: { cityCode } });
   };
 
   const onRemove = (cityCode: string) => {
