@@ -1,0 +1,28 @@
+.toastPortal {
+  width: fit-content;
+  margin: auto;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 3vw;
+  z-index: 10000;
+}
+
+.toastPortal ul {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 1rem;
+}
+
+.toastPortal ul li {
+  min-width: 200px;
+  max-width: 320px;
+  padding: 1.25rem 1.75rem;
+  border-radius: 25px;
+  background-color: #334155;
+  text-align: center;
+  line-height: 1.35;
+  color: white;
+  opacity: 0.95;
+}

@@ -3,13 +3,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
 import Layout from "@/components/common/layout/Layout";
+import ToastPortal from "@/components/common/toast-portal/ToastPortal";
 import { SAVED_LIST_PATH, TRADE_LIST_PATH } from "@/constants/paths";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-interface AppProps {}
-
 const TradeList = lazy(() => import("@/components/trade-list/TradeList"));
 const SavedList = lazy(() => import("@/components/saved-list/SavedList"));
+
+interface AppProps {}
 
 const App: FC<AppProps> = () => {
   const [isClient, setIsClient] = useState(false);
@@ -25,6 +26,7 @@ const App: FC<AppProps> = () => {
       <RecoilRoot>
         <BrowserRouter>
           <Layout>
+            <ToastPortal />
             <Routes>
               <Route path={TRADE_LIST_PATH} element={<TradeList />} />
               <Route path={SAVED_LIST_PATH} element={<SavedList />} />

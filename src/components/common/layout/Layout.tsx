@@ -5,13 +5,28 @@ import { FaRegBuilding } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
-import { SAVED_LIST_PATH, TRADE_LIST_PATH } from "@/constants/paths";
+import { MIGRATION_PATH, SAVED_LIST_PATH, TRADE_LIST_PATH } from "@/constants/paths";
 
 import styles from "./Layout.module.css";
 
 interface LayoutProps {
   children: ReactNode;
 }
+
+const routes = [
+  {
+    path: TRADE_LIST_PATH,
+    name: "실거래가 조회",
+  },
+  {
+    path: SAVED_LIST_PATH,
+    name: "저장 목록",
+  },
+  // {
+  //   path: MIGRATION_PATH,
+  //   name: "업로드",
+  // },
+];
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -35,12 +50,15 @@ const Layout: FC<LayoutProps> = ({ children }) => {
               <span className={styles.text}>아파트 실거래가 조회</span>
             </h1>
             <nav>
-              <Link to={TRADE_LIST_PATH} className={classNames({ [styles.active]: pathname === TRADE_LIST_PATH })}>
-                실거래가 조회
-              </Link>
-              <Link to={SAVED_LIST_PATH} className={classNames({ [styles.active]: pathname === SAVED_LIST_PATH })}>
-                저장 목록
-              </Link>
+              {routes.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={classNames({ [styles.active]: pathname === item.path })}
+                >
+                  {item.name}
+                </Link>
+              ))}
             </nav>
           </div>
         </header>

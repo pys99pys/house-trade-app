@@ -8,6 +8,7 @@ import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
 import { useApartListValue, useSetApartListState } from "@/stores/apartListStore";
 import { useFilterFormValue } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
+import { useSetToastState } from "@/stores/toastStore";
 import {
   createApartItemKey,
   createApartList,
@@ -40,6 +41,7 @@ const useTradeListTable = (): Return => {
   const filterFormValue = useFilterFormValue();
   const apartListValue = useApartListValue();
 
+  const setToast = useSetToastState();
   const setApartList = useSetApartListState();
 
   const copiedFilterForm = useRef<FilterType>(filterFormValue);
@@ -103,6 +105,7 @@ const useTradeListTable = (): Return => {
 
     setApartList(afterApartList);
     setValue(APART_LIST_STORAGE_KEY, afterApartList);
+    setToast(`(${tradeItem.apartName}) 저장 목록에 추가되었습니다.`);
   };
 
   const onRemoveItem = (tradeItem: TradeItem) => {
@@ -118,6 +121,7 @@ const useTradeListTable = (): Return => {
 
     setApartList(afterApartList);
     setValue(APART_LIST_STORAGE_KEY, afterApartList);
+    setToast(`(${tradeItem.apartName}) 저장 목록에서 삭제되었습니다.`);
   };
 
   const onChangePage = (page: number) => {
