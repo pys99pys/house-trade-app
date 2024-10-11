@@ -15,6 +15,12 @@
   font-weight: 700;
 }
 
+.savedList .buttonWrap {
+  display: flex;
+  justify-content: center;
+  column-gap: 0.75rem;
+}
+
 .savedList div h6 {
   font-size: 1.05rem;
   font-weight: 700;

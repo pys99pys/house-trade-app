@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { TRADE_LIST_PATH } from "@/constants/paths";
 import { APART_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { useApartListValue, useSetApartListState } from "@/stores/apartListStore";
+import { useSetToastState } from "@/stores/toastStore";
 import {
   createApartItemKey,
   createApartList,
@@ -11,7 +12,7 @@ import {
   parseApartItemKey,
 } from "@/utils/apartListUtil";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityDataUtil";
-import { setValue } from "@/utils/localStorage";
+import { getValue, setValue } from "@/utils/localStorage";
 
 interface Item {
   address: string;
@@ -26,10 +27,13 @@ interface Return {
   }[];
   onClick: (cityCode: string, item: Item) => void;
   onRemove: (cityCode: string, item: Item) => void;
+  onRemoveAll: () => void;
+  onCopy: () => void;
 }
 
 const useSavedList = (): Return => {
   const navigate = useNavigate();
+  const setToast = useSetToastState();
   const setApartList = useSetApartListState();
 
   const apartList = useApartListValue();
@@ -64,7 +68,25 @@ const useSavedList = (): Return => {
     setValue(APART_LIST_STORAGE_KEY, afterApartList);
   };
 
-  return { list, onClick, onRemove };
+  const onRemoveAll = () => {
+    if (confirm("저장된 아파트 목록을 삭제하시겠습니까?")) {
+      setApartList([]);
+      setValue(APART_LIST_STORAGE_KEY, []);
+    }
+  };
+
+  const onCopy = () => {
+    const value = getValue(APART_LIST_STORAGE_KEY);
+
+    if (value) {
+      navigator.clipboard.writeText(JSON.stringify(value));
+      setToast("저장된 아파트 목록이 복사되었습니다.");
+    } else {
+      setToast("저장된 아파트 목록이 없습니다.");
+    }
+  };
+
+  return { list, onClick, onRemove, onRemoveAll, onCopy };
 };
 
 export default useSavedList;
