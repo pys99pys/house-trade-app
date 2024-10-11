@@ -20,3 +20,7 @@ export const createApartItemKey = (tradeItem: {
 export const distinctApartList = (apartList: string[]): string[] => {
   return apartList.reduce((acc: string[], item: string) => (acc.includes(item) ? acc : [...acc, item]), []);
 };
+
+export const filterApartListWithCityCode = (cityCode: string, apartList: ApartListItem[]): string[] => {
+  return apartList.find((item) => item.cityCode === cityCode)?.items ?? [];
+};

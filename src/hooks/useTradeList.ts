@@ -5,6 +5,7 @@ import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
 import { useApartListValue } from "@/stores/apartListStore";
 import { useFilterFormValue } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
+import { filterApartListWithCityCode } from "@/utils/apartListUtil";
 import { filterItems } from "@/utils/tradeItemUtil";
 
 interface Return {
@@ -18,14 +19,13 @@ const useTradeList = (): Return => {
 
   const { data } = useFetchTradeListQuery();
 
-  const filteredApartList = useMemo(
-    () => apartList.find((item) => item.cityCode === searchParam.cityCode)?.items ?? [],
-    [searchParam.cityCode, apartList]
-  );
-
   const tradeList = useMemo(
-    () => filterItems(data?.list ?? [], { apartList: filteredApartList, filterForm }),
-    [data, filterForm]
+    () =>
+      filterItems(data?.list ?? [], {
+        apartList: filterApartListWithCityCode(searchParam.cityCode, apartList),
+        filterForm,
+      }),
+    [data, searchParam, filterForm, apartList]
   );
 
   return { tradeList };

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { APART_LIST_STORAGE_KEY, TRADE_LIST_ORDER_STORAGE_KEY } from "@/constants/storageKeys";
-import useTradeList from "@/hooks/useTradeList";
 import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
 import { TradeItem } from "@/interfaces/TradeItem";
@@ -9,9 +8,14 @@ import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
 import { useApartListValue, useSetApartListState } from "@/stores/apartListStore";
 import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
-import { createApartItemKey, createApartList, distinctApartList } from "@/utils/apartListUtil";
+import {
+  createApartItemKey,
+  createApartList,
+  distinctApartList,
+  filterApartListWithCityCode,
+} from "@/utils/apartListUtil";
 import { getValue, setValue } from "@/utils/localStorage";
-import { sliceItems, sortItems } from "@/utils/tradeItemUtil";
+import { filterItems, sliceItems, sortItems } from "@/utils/tradeItemUtil";
 
 const PER_PAGE = 15;
 
@@ -30,6 +34,8 @@ interface Return {
 }
 
 const useTradeListTable = (): Return => {
+  const { data } = useFetchTradeListQuery();
+
   const searchParamValue = useSearchParamValue();
   const filterFormValue = useFilterFormValue();
   const apartListValue = useApartListValue();
@@ -38,29 +44,37 @@ const useTradeListTable = (): Return => {
   const setApartList = useSetApartListState();
 
   const { isLoading } = useFetchTradeListQuery();
-  const { tradeList: filteredTradeList } = useTradeList();
 
   const copiedFilterForm = useRef<FilterType>(filterFormValue);
 
   const [page, setPage] = useState<number>(1);
   const [order, setOrder] = useState<OrderType>(getValue(TRADE_LIST_ORDER_STORAGE_KEY) ?? ["tradeDate", "desc"]);
 
+  const filteredList = useMemo(
+    () =>
+      filterItems(data?.list ?? [], {
+        apartList: filterApartListWithCityCode(searchParamValue.cityCode, apartListValue),
+        filterForm: filterFormValue,
+      }),
+    [data, searchParamValue, filterFormValue, apartListValue]
+  );
+
   const tradeList = useMemo(() => {
-    const sortedItems = sortItems(filteredTradeList, order);
+    const sortedItems = sortItems(filteredList, order);
     const slicedItems = sliceItems(sortedItems, {
       page,
       perPage: PER_PAGE,
     });
 
     return slicedItems;
-  }, [filteredTradeList, order, page]);
+  }, [filteredList, order, page]);
 
   const apartList = useMemo(
-    () => apartListValue.find((item) => item.cityCode === searchParamValue.cityCode)?.items ?? [],
+    () => filterApartListWithCityCode(searchParamValue.cityCode, apartListValue),
     [searchParamValue.cityCode, apartListValue]
   );
 
-  const count = useMemo(() => filteredTradeList.length, [filteredTradeList]);
+  const count = useMemo(() => filteredList.length, [filteredList]);
 
   const status = useMemo(() => {
     if (isLoading) {

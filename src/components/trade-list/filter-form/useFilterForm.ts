@@ -1,9 +1,13 @@
 import { useMemo } from "react";
 
-import useTradeList from "@/hooks/useTradeList";
 import { FilterType } from "@/interfaces/Filter";
+import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
+import { useApartListValue } from "@/stores/apartListStore";
 import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormStore";
+import { useSearchParamValue } from "@/stores/searchParamStore";
+import { filterApartListWithCityCode } from "@/utils/apartListUtil";
 import { parseToAverageAmountText } from "@/utils/formatter";
+import { filterItems } from "@/utils/tradeItemUtil";
 
 interface Return {
   filterForm: FilterType;
@@ -15,28 +19,40 @@ interface Return {
 }
 
 const useFilterForm = (): Return => {
-  const filterForm = useFilterFormValue();
+  const { data } = useFetchTradeListQuery();
+
+  const searchParamValue = useSearchParamValue();
+  const filterFormValue = useFilterFormValue();
+  const apartListValue = useApartListValue();
+
   const setFilterForm = useSetFilterFormState();
 
-  const { tradeList } = useTradeList();
+  const filteredList = useMemo(
+    () =>
+      filterItems(data?.list ?? [], {
+        apartList: filterApartListWithCityCode(searchParamValue.cityCode, apartListValue),
+        filterForm: filterFormValue,
+      }),
+    [data, searchParamValue, filterFormValue, apartListValue]
+  );
 
-  const count = useMemo(() => tradeList.length, [tradeList]);
-  const averageAmount = useMemo(() => parseToAverageAmountText(tradeList), [tradeList]);
+  const count = useMemo(() => filteredList.length, [filteredList]);
+  const averageAmount = useMemo(() => parseToAverageAmountText(filteredList), [filteredList]);
 
   const onChangeApartName = (apartName: string) => {
-    setFilterForm({ ...filterForm, apartName });
+    setFilterForm({ ...filterFormValue, apartName });
   };
 
   const onToggleOnlyBaseSize = () => {
-    setFilterForm({ ...filterForm, onlyBaseSize: !filterForm.onlyBaseSize });
+    setFilterForm({ ...filterFormValue, onlyBaseSize: !filterFormValue.onlyBaseSize });
   };
 
   const onToggleOnlySavedList = () => {
-    setFilterForm({ ...filterForm, onlySavedList: !filterForm.onlySavedList });
+    setFilterForm({ ...filterFormValue, onlySavedList: !filterFormValue.onlySavedList });
   };
 
   return {
-    filterForm,
+    filterForm: filterFormValue,
     count,
     averageAmount,
     onChangeApartName,
