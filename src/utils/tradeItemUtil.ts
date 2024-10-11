@@ -1,16 +1,15 @@
 import { FilterType } from "@/interfaces/Filter";
-import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
+import { TradeItem } from "@/interfaces/TradeItem";
 
-export const compareSavedApartItem = (a: SavedApartItem, b: SavedApartItem) =>
-  a.address === b.address && a.apartName === b.apartName;
+import { createApartItemKey } from "./apartListUtil";
 
 export const filterItems = (
   items: TradeItem[],
   {
-    savedApartList,
+    apartList,
     filterForm,
   }: {
-    savedApartList: SavedApartItem[];
+    apartList: string[];
     filterForm: FilterType;
   }
 ) =>
@@ -20,7 +19,7 @@ export const filterItems = (
     const includedBaseSize = filterForm.onlyBaseSize && item.size ? item.size > 83 && item.size < 85 : true;
 
     const includedSavedList = filterForm.onlySavedList
-      ? savedApartList.some((savedApartItem) => compareSavedApartItem(item, savedApartItem))
+      ? apartList.some((apartItem) => apartItem === createApartItemKey(item))
       : true;
 
     return includedApartName && includedBaseSize && includedSavedList;

@@ -1,13 +1,12 @@
 import cx from "classnames";
 import { FC, ReactNode } from "react";
-import { FaTrash } from "react-icons/fa";
 
 import Loading from "@/components/common/loading/Loading";
 import Pagination from "@/components/common/pagination/Pagination";
 import { TRADE_TABLE_PER_PAGE } from "@/constants/rules";
 import { TradeItem } from "@/interfaces/TradeItem";
+import { createApartItemKey } from "@/utils/apartListUtil";
 import { parseToAmount, parseToAreaSize, parseToFlatSize } from "@/utils/formatter";
-import { compareSavedApartItem } from "@/utils/tradeItem";
 
 import styles from "./TradeListTable.module.css";
 import useTradeListTable from "./useTradeListTable";
@@ -15,7 +14,7 @@ import useTradeListTable from "./useTradeListTable";
 interface TradeListTableProps {}
 
 const TradeListTable: FC<TradeListTableProps> = () => {
-  const { status, order, count, page, tradeList, savedApartList, onChangeOrder, onClickList, onChangePage } =
+  const { status, order, count, page, tradeList, apartList, onChangeOrder, onSaveItem, onRemoveItem, onChangePage } =
     useTradeListTable();
 
   const createHeaderCell = (key: keyof TradeItem, label: string) => (
@@ -28,6 +27,8 @@ const TradeListTable: FC<TradeListTableProps> = () => {
   );
 
   const createBodyCell = (label: ReactNode) => <div className={styles.cell}>{label}</div>;
+
+  const createButtonCell = (children: ReactNode) => <div className={styles.buttonCell}>{children}</div>;
 
   return (
     <div className={styles.tradeListTable}>
@@ -50,47 +51,59 @@ const TradeListTable: FC<TradeListTableProps> = () => {
         {status === "EMPTY" && <div className={styles.empty}>데이터 없음</div>}
 
         {status === "SUCCESS" &&
-          tradeList.map((item, i) => (
-            <div
-              key={i}
-              className={cx(styles.row, {
-                [styles.active]: savedApartList.some((savedApartItem) => compareSavedApartItem(item, savedApartItem)),
-              })}
-              onClick={() => onClickList(item)}
-            >
-              {createBodyCell(<>{item.tradeDate}</>)}
-              {createBodyCell(<>{item.address}</>)}
-              {createBodyCell(
-                <div className={styles.wrap}>
-                  {item.apartName}
-                  <small>
-                    {(() => {
-                      const subTexts: string[] = [];
+          tradeList.map((item, i) => {
+            const isSavedItem = apartList.some((apartItem) => apartItem === createApartItemKey(item));
 
-                      if (item.floor !== null) subTexts.push(`${item.floor}층`);
-                      if (item.buildedYear !== null) subTexts.push(`${item.buildedYear}년식`);
-                      if (item.householdsNumber !== null) subTexts.push(`${item.householdsNumber}세대`);
-
-                      return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
-                    })()}
-                  </small>
-                </div>
-              )}
-              {createBodyCell(
-                item.size && (
+            return (
+              <div key={i} className={cx(styles.row, { [styles.active]: isSavedItem })}>
+                {createBodyCell(<>{item.tradeDate}</>)}
+                {createBodyCell(<>{item.address}</>)}
+                {createBodyCell(
                   <div className={styles.wrap}>
-                    {parseToFlatSize(item.size)}평<small>({parseToAreaSize(item.size)}㎡)</small>
+                    {item.apartName}
+                    <small>
+                      {(() => {
+                        const subTexts: string[] = [];
+
+                        if (item.floor !== null) subTexts.push(`${item.floor}층`);
+                        if (item.buildedYear !== null) subTexts.push(`${item.buildedYear}년식`);
+                        if (item.householdsNumber !== null) subTexts.push(`${item.householdsNumber}세대`);
+
+                        return subTexts.length > 0 ? `(${subTexts.join("/")})` : "";
+                      })()}
+                    </small>
                   </div>
-                )
-              )}
-              {createBodyCell(
-                <span className={cx({ [styles.highlight]: item.isNewRecord })}>
-                  {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
-                </span>
-              )}
-              {createBodyCell(item.maxTradeAmount > 0 ? <>{parseToAmount(item.maxTradeAmount)}억원</> : null)}
-            </div>
-          ))}
+                )}
+                {createBodyCell(
+                  item.size && (
+                    <div className={styles.wrap}>
+                      {parseToFlatSize(item.size)}평<small>({parseToAreaSize(item.size)}㎡)</small>
+                    </div>
+                  )
+                )}
+                {createBodyCell(
+                  <span className={cx({ [styles.highlight]: item.isNewRecord })}>
+                    {parseToAmount(item.tradeAmount)}억원{item.isNewRecord && "(신)"}
+                  </span>
+                )}
+                {createBodyCell(item.maxTradeAmount > 0 ? <>{parseToAmount(item.maxTradeAmount)}억원</> : null)}
+                {createButtonCell(
+                  <>
+                    {isSavedItem && (
+                      <button className={styles.removeButton} onClick={() => onRemoveItem(item)}>
+                        삭제
+                      </button>
+                    )}
+                    {!isSavedItem && (
+                      <button className={styles.saveButton} onClick={() => onSaveItem(item)}>
+                        저장
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
       </div>
 
       {status === "SUCCESS" && count > TRADE_TABLE_PER_PAGE && (

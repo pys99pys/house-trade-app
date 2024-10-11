@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
+import { FAVORITE_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
 import { useSetSearchParamSessionState } from "@/stores/searchParamSessionStore";
-import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityData";
+import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityDataUtil";
 import { setValue } from "@/utils/localStorage";
 
 interface Return {
@@ -36,7 +36,7 @@ const useFavoriteList = (): Return => {
     const afterFavoriteCityCodes = favoriteCityCodes.filter((item) => item !== cityCode);
 
     setFavoriteCityCodes(afterFavoriteCityCodes);
-    setValue(STORAGE_KEY_FAVORITE_LIST, afterFavoriteCityCodes);
+    setValue(FAVORITE_LIST_STORAGE_KEY, afterFavoriteCityCodes);
   };
 
   return { favoriteList, onClick, onRemove };

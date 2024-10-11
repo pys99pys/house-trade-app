@@ -1,12 +1,12 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 
-import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
+import { FAVORITE_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { SearchFormType } from "@/interfaces/SearchForm";
 import { useFavoriteCityCodeListValue, useSetFavoriteCityCodeListState } from "@/stores/favoriteCityCodeListStore";
-import { useSearchParamSessionValue } from "@/stores/searchParamSessionStore";
+import { useSearchParamSessionValue, useSetSearchParamSessionState } from "@/stores/searchParamSessionStore";
 import { useSetSearchParamState } from "@/stores/searchParamStore";
-import { getCityNameWithCode, getFirstCityCode } from "@/utils/cityData";
-import { getBeforeYearMonth } from "@/utils/date";
+import { getCityNameWithCode, getFirstCityCode } from "@/utils/cityDataUtil";
+import { getBeforeYearMonth } from "@/utils/dateUtil";
 import { setValue } from "@/utils/localStorage";
 
 const defaultCityCode = getFirstCityCode();
@@ -29,6 +29,7 @@ const useSearchForm = (): Return => {
 
   const setFavoriteCityCodes = useSetFavoriteCityCodeListState();
   const setSearchParam = useSetSearchParamState();
+  const setSearchParamSession = useSetSearchParamSessionState();
 
   const [form, setForm] = useState<SearchFormType>({
     cityName: getCityNameWithCode(defaultCityCode),
@@ -57,7 +58,7 @@ const useSearchForm = (): Return => {
     const afterFavoriteCityCodes = [...favoriteCityCodes, form.cityCode];
 
     setFavoriteCityCodes(afterFavoriteCityCodes);
-    setValue(STORAGE_KEY_FAVORITE_LIST, afterFavoriteCityCodes);
+    setValue(FAVORITE_LIST_STORAGE_KEY, afterFavoriteCityCodes);
   };
 
   const onSubmit = (e?: FormEvent) => {
@@ -78,8 +79,9 @@ const useSearchForm = (): Return => {
 
       setForm(afterForm);
       setSearchParam({ cityCode: afterForm.cityCode, yearMonth: afterForm.yearMonth });
+      setSearchParamSession(null);
     }
-  }, [searchParamSession, setSearchParam]);
+  }, [searchParamSession, setSearchParam, setSearchParamSession]);
 
   useEffect(() => {
     copiedForm.current = form;

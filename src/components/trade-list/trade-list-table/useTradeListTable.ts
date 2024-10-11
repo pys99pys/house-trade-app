@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { STORAGE_KEY_ORDER } from "@/constants/storageKeys";
-import useSavedList from "@/hooks/useSavedList";
+import { APART_LIST_STORAGE_KEY, TRADE_LIST_ORDER_STORAGE_KEY } from "@/constants/storageKeys";
 import useTradeList from "@/hooks/useTradeList";
 import { FilterType } from "@/interfaces/Filter";
 import { OrderType } from "@/interfaces/Order";
-import { SavedApartItem, TradeItem } from "@/interfaces/TradeItem";
+import { TradeItem } from "@/interfaces/TradeItem";
 import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
+import { useApartListValue, useSetApartListState } from "@/stores/apartListStore";
 import { useFilterFormValue, useSetFilterFormState } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
+import { createApartItemKey, createApartList, distinctApartList } from "@/utils/apartListUtil";
 import { getValue, setValue } from "@/utils/localStorage";
-import { compareSavedApartItem, sliceItems, sortItems } from "@/utils/tradeItem";
+import { sliceItems, sortItems } from "@/utils/tradeItemUtil";
 
 const PER_PAGE = 15;
 
@@ -20,31 +21,29 @@ interface Return {
   count: number;
   page: number;
   tradeList: TradeItem[];
-  savedApartList: SavedApartItem[];
+  apartList: string[];
 
   onChangeOrder: (order: OrderType) => void;
-  onClickList: (tradeItem: { address: TradeItem["address"]; apartName: TradeItem["apartName"] }) => void;
+  onSaveItem: (tradeItem: TradeItem) => void;
+  onRemoveItem: (tradeItem: TradeItem) => void;
   onChangePage: (page: number) => void;
 }
 
 const useTradeListTable = (): Return => {
-  const searchParam = useSearchParamValue();
-  const filterForm = useFilterFormValue();
+  const searchParamValue = useSearchParamValue();
+  const filterFormValue = useFilterFormValue();
+  const apartListValue = useApartListValue();
+
   const setFilterForm = useSetFilterFormState();
+  const setApartList = useSetApartListState();
 
   const { isLoading } = useFetchTradeListQuery();
-  const { savedList, saveItem, removeItem } = useSavedList();
   const { tradeList: filteredTradeList } = useTradeList();
 
-  const copiedFilterForm = useRef<FilterType>(filterForm);
+  const copiedFilterForm = useRef<FilterType>(filterFormValue);
 
   const [page, setPage] = useState<number>(1);
-  const [order, setOrder] = useState<OrderType>(getValue(STORAGE_KEY_ORDER) ?? ["tradeDate", "desc"]);
-
-  const savedApartList = useMemo(
-    () => savedList.find((item) => item.cityCode === searchParam.cityCode)?.apartList ?? [],
-    [searchParam, savedList]
-  );
+  const [order, setOrder] = useState<OrderType>(getValue(TRADE_LIST_ORDER_STORAGE_KEY) ?? ["tradeDate", "desc"]);
 
   const tradeList = useMemo(() => {
     const sortedItems = sortItems(filteredTradeList, order);
@@ -55,6 +54,11 @@ const useTradeListTable = (): Return => {
 
     return slicedItems;
   }, [filteredTradeList, order, page]);
+
+  const apartList = useMemo(
+    () => apartListValue.find((item) => item.cityCode === searchParamValue.cityCode)?.items ?? [],
+    [searchParamValue.cityCode, apartListValue]
+  );
 
   const count = useMemo(() => filteredTradeList.length, [filteredTradeList]);
 
@@ -71,18 +75,38 @@ const useTradeListTable = (): Return => {
   }, [isLoading, tradeList]);
 
   const onChangeOrder = (afterOrder: OrderType) => {
-    setValue(STORAGE_KEY_ORDER, afterOrder);
+    setValue(TRADE_LIST_ORDER_STORAGE_KEY, afterOrder);
     setOrder(afterOrder);
   };
 
-  const onClickList = (tradeItem: { address: TradeItem["address"]; apartName: TradeItem["apartName"] }) => {
-    const hasSavedApartList = savedApartList.some((item) => compareSavedApartItem(item, tradeItem));
+  const onSaveItem = (tradeItem: TradeItem) => {
+    const apartItemKey = createApartItemKey({
+      address: tradeItem.address,
+      apartName: tradeItem.apartName,
+    });
+    const afterApartItems = distinctApartList([...apartList, apartItemKey]);
+    const afterApartList = createApartList(apartListValue, {
+      cityCode: searchParamValue.cityCode,
+      items: afterApartItems,
+    });
 
-    if (hasSavedApartList) {
-      removeItem(searchParam.cityCode, tradeItem);
-    } else {
-      saveItem(searchParam.cityCode, tradeItem);
-    }
+    setApartList(afterApartList);
+    setValue(APART_LIST_STORAGE_KEY, afterApartList);
+  };
+
+  const onRemoveItem = (tradeItem: TradeItem) => {
+    const apartItemKey = createApartItemKey({
+      address: tradeItem.address,
+      apartName: tradeItem.apartName,
+    });
+    const afterApartItems = apartList.filter((item) => item !== apartItemKey);
+    const afterApartList = createApartList(apartListValue, {
+      cityCode: searchParamValue.cityCode,
+      items: afterApartItems,
+    });
+
+    setApartList(afterApartList);
+    setValue(APART_LIST_STORAGE_KEY, afterApartList);
   };
 
   const onChangePage = (page: number) => {
@@ -92,14 +116,26 @@ const useTradeListTable = (): Return => {
   useEffect(() => {
     setPage(1);
     setFilterForm({ ...copiedFilterForm.current, apartName: "" });
-  }, [searchParam, setFilterForm]);
+  }, [searchParamValue, setFilterForm]);
 
   useEffect(() => {
     setPage(1);
-    copiedFilterForm.current = filterForm;
-  }, [filterForm]);
+    copiedFilterForm.current = filterFormValue;
+  }, [filterFormValue]);
 
-  return { status, order, count, page, tradeList, savedApartList, onChangeOrder, onClickList, onChangePage };
+  return {
+    status,
+    order,
+    count,
+    page,
+    tradeList,
+    apartList,
+
+    onChangeOrder,
+    onSaveItem,
+    onRemoveItem,
+    onChangePage,
+  };
 };
 
 export default useTradeListTable;

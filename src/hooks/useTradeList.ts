@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
-import useSavedList from "@/hooks/useSavedList";
 import { TradeItem } from "@/interfaces/TradeItem";
 import useFetchTradeListQuery from "@/queries/useFetchTradeListQuery";
+import { useApartListValue } from "@/stores/apartListStore";
 import { useFilterFormValue } from "@/stores/filterFormStore";
 import { useSearchParamValue } from "@/stores/searchParamStore";
-import { filterItems } from "@/utils/tradeItem";
+import { filterItems } from "@/utils/tradeItemUtil";
 
 interface Return {
   tradeList: TradeItem[];
@@ -14,18 +14,18 @@ interface Return {
 const useTradeList = (): Return => {
   const searchParam = useSearchParamValue();
   const filterForm = useFilterFormValue();
+  const apartList = useApartListValue();
 
   const { data } = useFetchTradeListQuery();
-  const { savedList } = useSavedList();
 
-  const savedApartList = useMemo(
-    () => savedList.find((item) => item.cityCode === searchParam.cityCode)?.apartList ?? [],
-    [searchParam, savedList]
+  const filteredApartList = useMemo(
+    () => apartList.find((item) => item.cityCode === searchParam.cityCode)?.items ?? [],
+    [searchParam.cityCode, apartList]
   );
 
   const tradeList = useMemo(
-    () => filterItems(data?.list ?? [], { savedApartList, filterForm }),
-    [data, savedApartList, filterForm]
+    () => filterItems(data?.list ?? [], { apartList: filteredApartList, filterForm }),
+    [data, filterForm]
   );
 
   return { tradeList };

@@ -6,7 +6,7 @@
 .tradeListTable .row {
   padding: 0 0.75rem;
   display: grid;
-  grid-template-columns: 0.5fr 1fr 1.5fr 0.75fr 0.5fr 0.5fr;
+  grid-template-columns: 0.5fr 1fr 1.5fr 0.75fr 0.5fr 0.5fr 0.25fr;
 }
 
 .tradeListTable .header .headerCell button {
@@ -58,6 +58,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   background-color: white;
+  transition: border-color 300ms ease;
 }
 
 .tradeListTable .body .row.active {
@@ -83,6 +84,33 @@
 
 .tradeListTable .body .row .cell .wrap small {
   font-size: 0.85rem;
+}
+
+.tradeListTable .body .row .buttonCell {
+  padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.tradeListTable .body .row .buttonCell button {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+.tradeListTable .body .row .buttonCell button:hover {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tradeListTable .body .row .buttonCell button.saveButton {
+  color: var(--color-primary);
+}
+
+.tradeListTable .body .row .buttonCell button.removeButton {
+  color: var(--color-red);
 }
 
 .tradeListTable .pagination {

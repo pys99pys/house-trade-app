@@ -40,8 +40,7 @@ const ORDER_OPTIONS: { value: OrderType[0]; label: string }[] = [
 ];
 
 const TradeListTableMobile: FC<TradeListTableMobileProps> = () => {
-  const { status, order, count, page, tradeList, savedApartList, onChangeOrder, onClickList, onChangePage } =
-    useTradeListTable();
+  const { status, order, count, page, tradeList, onChangeOrder, onChangePage } = useTradeListTable();
 
   return (
     <div className={styles.TradeListTableMobile}>

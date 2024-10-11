@@ -1,11 +1,11 @@
 import { atom, useRecoilValue, useSetRecoilState } from "recoil";
 
-import { STORAGE_KEY_FAVORITE_LIST } from "@/constants/storageKeys";
+import { FAVORITE_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { getValue } from "@/utils/localStorage";
 
 const favoriteCityCodeListStore = atom<string[]>({
   key: "favoriteListStore",
-  default: getValue(STORAGE_KEY_FAVORITE_LIST) ?? [],
+  default: getValue(FAVORITE_LIST_STORAGE_KEY) ?? [],
 });
 
 export const useFavoriteCityCodeListValue = () => useRecoilValue(favoriteCityCodeListStore);

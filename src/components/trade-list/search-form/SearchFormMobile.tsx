@@ -3,7 +3,7 @@ import { FC } from "react";
 import Button from "@/components/common/button/Button";
 import MonthPicker from "@/components/common/month-picker/MonthPicker";
 import Select from "@/components/common/select/Select";
-import { getCityCodeItems, getCityNameItems } from "@/utils/cityData";
+import { getCityCodeItems, getCityNameItems } from "@/utils/cityDataUtil";
 
 import styles from "./SearchFormMobile.module.css";
 import useSearchForm from "./useSearchForm";

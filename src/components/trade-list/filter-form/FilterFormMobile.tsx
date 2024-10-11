@@ -2,7 +2,6 @@ import { FC } from "react";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
-import useTradeList from "@/hooks/useTradeList";
 import { parseToAmountText } from "@/utils/formatter";
 
 import styles from "./FilterFormMobile.module.css";
