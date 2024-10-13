@@ -11,7 +11,7 @@
 .toastPortal ul {
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: column-reverse;
   row-gap: 1rem;
 }
 
