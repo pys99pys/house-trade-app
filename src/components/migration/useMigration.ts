@@ -2,12 +2,13 @@ import { useState } from "react";
 
 import { APART_LIST_STORAGE_KEY } from "@/constants/storageKeys";
 import { useSetToastState } from "@/stores/toastStore";
-import { setValue } from "@/utils/localStorage";
+import { getValue, setValue } from "@/utils/localStorage";
 
 interface Return {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
+  onCopy: () => void;
+  onUpload: () => void;
 }
 
 const useMigration = (): Return => {
@@ -32,14 +33,25 @@ const useMigration = (): Return => {
     setData(afterValue);
   };
 
-  const onSubmit = () => {
+  const onCopy = () => {
+    const value = getValue(APART_LIST_STORAGE_KEY);
+
+    if (value) {
+      navigator.clipboard.writeText(JSON.stringify(value));
+      setToast("저장된 아파트 목록이 복사되었습니다.");
+    } else {
+      setToast("저장된 아파트 목록이 없습니다.");
+    }
+  };
+
+  const onUpload = () => {
     if (validateJsonFormat()) {
       setValue(APART_LIST_STORAGE_KEY, JSON.parse(data));
       setToast("아파트 목록이 업데이트 되었습니다.");
     }
   };
 
-  return { value: data, onChange, onSubmit };
+  return { value: data, onChange, onCopy, onUpload };
 };
 
 export default useMigration;

@@ -7,7 +7,7 @@ import useMigration from "./useMigration";
 interface MigrationProps {}
 
 const Migration: FC<MigrationProps> = () => {
-  const { value, onChange, onSubmit } = useMigration();
+  const { value, onChange, onCopy, onUpload } = useMigration();
 
   return (
     <div className={styles.migration}>
@@ -16,9 +16,14 @@ const Migration: FC<MigrationProps> = () => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
-      <Button color="primary" onClick={onSubmit}>
-        업로드
-      </Button>
+      <div className={styles.buttonWrap}>
+        <Button color="yellow" onClick={onCopy}>
+          저장 목록 복사
+        </Button>
+        <Button color="primary" onClick={onUpload}>
+          저장 목록 업로드
+        </Button>
+      </div>
     </div>
   );
 };

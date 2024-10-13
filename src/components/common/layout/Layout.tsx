@@ -22,10 +22,6 @@ const routes = [
     path: SAVED_LIST_PATH,
     name: "저장 목록",
   },
-  {
-    path: MIGRATION_PATH,
-    name: "업로드",
-  },
 ];
 
 const Layout: FC<LayoutProps> = ({ children }) => {

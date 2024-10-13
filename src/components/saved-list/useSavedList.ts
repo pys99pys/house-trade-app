@@ -12,7 +12,7 @@ import {
   parseApartItemKey,
 } from "@/utils/apartListUtil";
 import { getCityCodeWithCode, getCityNameWithCode } from "@/utils/cityDataUtil";
-import { getValue, setValue } from "@/utils/localStorage";
+import { setValue } from "@/utils/localStorage";
 
 interface Item {
   address: string;
@@ -27,8 +27,6 @@ interface Return {
   }[];
   onClick: (cityCode: string, item: Item) => void;
   onRemove: (cityCode: string, item: Item) => void;
-  onRemoveAll: () => void;
-  onCopy: () => void;
 }
 
 const useSavedList = (): Return => {
@@ -68,25 +66,7 @@ const useSavedList = (): Return => {
     setValue(APART_LIST_STORAGE_KEY, afterApartList);
   };
 
-  const onRemoveAll = () => {
-    if (confirm("저장된 아파트 목록을 삭제하시겠습니까?")) {
-      setApartList([]);
-      setValue(APART_LIST_STORAGE_KEY, []);
-    }
-  };
-
-  const onCopy = () => {
-    const value = getValue(APART_LIST_STORAGE_KEY);
-
-    if (value) {
-      navigator.clipboard.writeText(JSON.stringify(value));
-      setToast("저장된 아파트 목록이 복사되었습니다.");
-    } else {
-      setToast("저장된 아파트 목록이 없습니다.");
-    }
-  };
-
-  return { list, onClick, onRemove, onRemoveAll, onCopy };
+  return { list, onClick, onRemove };
 };
 
 export default useSavedList;

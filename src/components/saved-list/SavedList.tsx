@@ -8,7 +8,7 @@ import useSavedList from "./useSavedList";
 interface SavedListProps {}
 
 const SavedList: FC<SavedListProps> = () => {
-  const { list, onClick, onRemove, onRemoveAll, onCopy } = useSavedList();
+  const { list, onClick, onRemove } = useSavedList();
 
   return (
     <div className={styles.savedList}>
@@ -38,17 +38,6 @@ const SavedList: FC<SavedListProps> = () => {
           </ul>
         </div>
       ))}
-
-      {list.length > 0 && (
-        <div className={styles.buttonWrap}>
-          <Button color="primary" onClick={onCopy}>
-            저장 목록 복사
-          </Button>
-          <Button color="red" onClick={onRemoveAll}>
-            전체 목록 삭제
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
