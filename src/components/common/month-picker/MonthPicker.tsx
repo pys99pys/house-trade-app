@@ -1,6 +1,6 @@
 import classNames from "classnames";
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FaArrowLeft, FaArrowRight, FaCalendarAlt } from "react-icons/fa";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FaAngleLeft, FaAngleRight, FaArrowLeft, FaArrowRight, FaCalendarAlt } from "react-icons/fa";
 
 import styles from "./MonthPicker.module.css";
 
@@ -8,6 +8,17 @@ interface MonthPickerProps {
   value: string;
   onChange: (value: string) => void;
 }
+
+const calculateYearValue = (yearValue: string, acc: number): string => {
+  return (Number(yearValue) + acc).toString();
+};
+
+const calculateMonthValue = (monthValue: string | number, acc: number = 0): string => {
+  const calculatedMonthValue = Number(monthValue) + acc;
+  const afterMonthValue = calculatedMonthValue === 0 ? 12 : calculatedMonthValue === 13 ? 1 : calculatedMonthValue;
+
+  return afterMonthValue.toString().padStart(2, "0");
+};
 
 const MonthPicker: FC<MonthPickerProps> = ({ value, onChange }) => {
   const [isShow, setIsShow] = useState(false);
@@ -27,23 +38,31 @@ const MonthPicker: FC<MonthPickerProps> = ({ value, onChange }) => {
     setIsShow(true);
   };
 
-  const onClickPrevYear = () => {
-    const prevYear = Number(yearValue) - 1;
+  const onClickPrevMonth = () => {
+    setIsShow(false);
+    onChange(
+      (monthValue === "01" ? calculateYearValue(yearValue, -1) : yearValue) + calculateMonthValue(monthValue, -1)
+    );
+  };
 
-    onChange(prevYear.toString() + monthValue);
+  const onClickNextMonth = () => {
+    setIsShow(false);
+    onChange(
+      (monthValue === "12" ? calculateYearValue(yearValue, +1) : yearValue) + calculateMonthValue(monthValue, +1)
+    );
+  };
+
+  const onClickPrevYear = () => {
+    onChange(calculateYearValue(yearValue, -1) + monthValue);
   };
 
   const onClickNextYear = () => {
-    const nextYear = Number(yearValue) + 1;
-
-    onChange(nextYear.toString() + monthValue);
+    onChange(calculateYearValue(yearValue, 1) + monthValue);
   };
 
-  const onClickMonth = (month: number) => {
-    const afterMonth = month.toString().padStart(2, "0");
-
-    onChange(yearValue + afterMonth);
+  const onChangeMonth = (month: number) => {
     setIsShow(false);
+    onChange(yearValue + calculateMonthValue(month));
   };
 
   useEffect(() => {
@@ -58,12 +77,24 @@ const MonthPicker: FC<MonthPickerProps> = ({ value, onChange }) => {
         [styles.active]: isShow,
       })}
     >
-      <div className={styles.inputWrap} onClick={onClickPicker}>
-        <div>
+      <div className={styles.inputWrap}>
+        <div className={styles.buttonWrap}>
+          <button type="button" onClick={onClickPrevMonth}>
+            <FaAngleLeft />
+          </button>
+        </div>
+        <div className={styles.textWrap}>
           {yearValue}년 {Number(monthValue)}월
         </div>
-        <div className={styles.icon}>
-          <FaCalendarAlt />
+        <div className={styles.buttonWrap}>
+          <button type="button" onClick={onClickNextMonth}>
+            <FaAngleRight />
+          </button>
+        </div>
+        <div className={styles.buttonWrap}>
+          <button type="button" onClick={onClickPicker}>
+            <FaCalendarAlt />
+          </button>
         </div>
       </div>
 
@@ -82,7 +113,7 @@ const MonthPicker: FC<MonthPickerProps> = ({ value, onChange }) => {
             <ul>
               {new Array(12).fill(null).map((_, i) => (
                 <li key={i}>
-                  <button type="button" onClick={() => onClickMonth(i + 1)}>
+                  <button type="button" onClick={() => onChangeMonth(i + 1)}>
                     {i + 1}월
                   </button>
                 </li>
