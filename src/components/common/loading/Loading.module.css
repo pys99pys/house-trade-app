@@ -7,7 +7,7 @@
   width: 0.75rem;
   height: 0.75rem;
   border-radius: 3px;
-  background-color: #666;
+  background-color: var(--color-secondary);
   opacity: 0;
   transform: scale(0);
   transition:

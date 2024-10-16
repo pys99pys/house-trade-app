@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { FaCheck } from "react-icons/fa";
 
 import Button from "@/components/common/button/Button";
 import Input from "@/components/common/input/Input";
@@ -31,9 +32,11 @@ const FilterForm: FC<FilterFormProps> = () => {
       <div className={styles.buttonWrap}>
         <Input size="small" placeholder="아파트명" value={filterForm.apartName} onChange={onChangeApartName} />
         <Button size="small" color={filterForm.onlyBaseSize ? "primary" : "default"} onClick={onToggleOnlyBaseSize}>
-          국민평수
+          <FaCheck />
+          국민 평수
         </Button>
         <Button size="small" color={filterForm.onlySavedList ? "primary" : "default"} onClick={onToggleOnlySavedList}>
+          <FaCheck />
           저장 목록
         </Button>
       </div>

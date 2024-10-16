@@ -11,7 +11,7 @@
 
 .filterFormMobile .summaryWrap strong {
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
 .filterFormMobile .buttonWrap {
