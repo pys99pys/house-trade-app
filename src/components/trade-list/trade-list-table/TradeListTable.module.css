@@ -106,7 +106,7 @@
 }
 
 .tradeListTable .body .row .buttonCell button.saveButton {
-  color: var(--color-secondary);
+  color: var(--color-link);
 }
 
 .tradeListTable .body .row .buttonCell button.removeButton {

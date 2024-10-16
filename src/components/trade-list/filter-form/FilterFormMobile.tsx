@@ -1,6 +1,7 @@
 import { FC } from "react";
 
 import Button from "@/components/common/button/Button";
+import Checkbox from "@/components/common/checkbox/Checkbox";
 import Input from "@/components/common/input/Input";
 import { parseToAmountText } from "@/utils/formatter";
 
@@ -29,12 +30,12 @@ const FilterForm: FC<FilterFormProps> = () => {
         )}
       </div>
       <div className={styles.buttonWrap}>
-        <Button size="small" color={filterForm.onlyBaseSize ? "primary" : "default"} onClick={onToggleOnlyBaseSize}>
-          국민평수
-        </Button>
-        <Button size="small" color={filterForm.onlySavedList ? "primary" : "default"} onClick={onToggleOnlySavedList}>
+        <Checkbox size="small" checked={filterForm.onlyBaseSize} onClick={onToggleOnlyBaseSize}>
+          국민 평수
+        </Checkbox>
+        <Checkbox size="small" checked={filterForm.onlySavedList} onClick={onToggleOnlySavedList}>
           저장 목록
-        </Button>
+        </Checkbox>
       </div>
       <div className={styles.inputWrap}>
         <Input size="small" placeholder="아파트명" value={filterForm.apartName} onChange={onChangeApartName} />
