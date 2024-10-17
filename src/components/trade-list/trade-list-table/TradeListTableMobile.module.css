@@ -36,7 +36,7 @@
 }
 
 .TradeListTableMobile .tableWrap .list ul li.active {
-  border-color: var(--color-secondary);
+  border-color: var(--color-primary);
 }
 
 .TradeListTableMobile .tableWrap .list ul li .left {
@@ -70,7 +70,7 @@
 .TradeListTableMobile .tableWrap .list ul li .right .amountWrap .tradeAmount {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .TradeListTableMobile .tableWrap .list ul li .right .buttonWrap button {
@@ -82,7 +82,7 @@
 }
 
 .TradeListTableMobile .tableWrap .list ul li .right .buttonWrap button.saveButton {
-  color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .TradeListTableMobile .tableWrap .list ul li .right .buttonWrap button.removeButton {

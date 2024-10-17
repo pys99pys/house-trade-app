@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   position: fixed;
-  background-color: var(--color-primary);
+  background-color: #334155;
   z-index: 9999;
 }
 
@@ -41,7 +41,7 @@
 }
 
 .layout .header .container nav a {
-  padding: 1.75rem 1.25rem;
+  padding: 1.75rem;
   text-decoration: none;
   font-weight: 500;
   color: var(--color-white);
@@ -50,11 +50,7 @@
 
 .layout .header .container nav a:hover,
 .layout .header .container nav a.active {
-  font-weight: 900;
-}
-
-.layout .header .container nav a.active {
-  background-color: var(--color-primary-hover);
+  background-color: #020617;
 }
 
 .layout .main {
@@ -87,5 +83,5 @@
 
 .layout.mobile .main {
   min-width: 0;
-  padding: 6.5rem 0;
+  padding: 7rem 0;
 }

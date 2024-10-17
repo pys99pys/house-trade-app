@@ -11,6 +11,6 @@
 }
 
 .select:focus {
-  border-color: var(--color-secondary);
+  border-color: var(--color-primary);
   cursor: pointer;
 }

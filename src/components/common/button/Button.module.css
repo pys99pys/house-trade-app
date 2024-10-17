@@ -35,12 +35,12 @@
 }
 
 .button.primaryColor {
-  background-color: var(--color-secondary);
+  background-color: var(--color-primary);
   color: white;
 }
 
 .button.primaryColor:hover {
-  background-color: var(--color-secondary-hover);
+  background-color: var(--color-primary-hover);
 }
 
 .button.redColor {

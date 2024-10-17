@@ -20,7 +20,7 @@
 }
 
 .pagination button.active {
-  background-color: var(--color-secondary);
+  background-color: var(--color-primary);
   color: white;
 }
 

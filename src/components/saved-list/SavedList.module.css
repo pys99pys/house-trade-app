@@ -55,10 +55,3 @@
   color: var(--color-red);
   cursor: pointer;
 }
-
-@media screen and (max-width: 1024px) {
-  .savedList div ul {
-    overflow: auto;
-    flex-wrap: nowrap;
-  }
-}
