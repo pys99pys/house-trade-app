@@ -5,10 +5,12 @@
 
 .layout .header {
   width: 100%;
+  padding: 0.75rem 0;
   display: flex;
   justify-content: center;
   position: fixed;
-  background-color: #334155;
+  background-color: var(--color-white);
+  box-shadow: 0 0 5px #ccc;
   z-index: 9999;
 }
 
@@ -25,7 +27,7 @@
   gap: 0.35rem;
   font-family: "Black Han Sans";
   font-size: 1.25rem;
-  color: var(--color-white);
+  color: var(--color-primary);
 }
 
 .layout .header .container h1 .logo {
@@ -38,19 +40,21 @@
 
 .layout .header .container nav {
   display: flex;
+  column-gap: 0.5rem;
 }
 
 .layout .header .container nav a {
-  padding: 1.75rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
   text-decoration: none;
   font-weight: 500;
-  color: var(--color-white);
+  color: var(--color-font);
   transition: background-color 300ms ease;
 }
 
 .layout .header .container nav a:hover,
 .layout .header .container nav a.active {
-  background-color: #020617;
+  background-color: #eee;
 }
 
 .layout .main {
